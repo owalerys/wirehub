@@ -20,3 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    Route::view('/app/{catchall?}', 'vue')->where('catchall', '(.*)');
+});
