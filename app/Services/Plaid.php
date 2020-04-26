@@ -42,7 +42,7 @@ class Plaid
         );
     }
 
-    public function exchangePublicToken(string $publicToken)
+    public function exchangePublicToken(string $publicToken): ?Item
     {
         $response = $this->client->post('/item/public_token/exchange', $this->withAuthentication(
             [
@@ -50,12 +50,12 @@ class Plaid
             ]
         ));
 
-        if (!$response->ok()) return;
+        if (!$response->ok()) return null;
 
-        return $item = $this->getLink($response['access_token']);
+        return $this->getItem($response['access_token']);
     }
 
-    private function getLink(string $accessToken): Item
+    private function getItem(string $accessToken): Item
     {
         $response = $this->client->post('/item/get', $this->withAuthentication([
             'access_token' => $accessToken

@@ -13,6 +13,8 @@ class PlaidController extends Controller
             'public_token' => 'required|string'
         ]);
 
-        $service->exchangePublicToken($request->input('public_token'));
+        $item = $service->exchangePublicToken($request->input('public_token'));
+
+        return response()->json($item);
     }
 }
