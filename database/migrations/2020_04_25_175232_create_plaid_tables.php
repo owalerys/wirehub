@@ -18,7 +18,7 @@ class CreatePlaidTables extends Migration
             $table->json('status');
             $table->string('external_id')->unique();
             $table->string('access_token');
-            $table->string('institution_id');
+            $table->json('institution')->nullable();
             $table->string('webhook');
             $table->json('error')->nullable();
             $table->json('available_products');
@@ -33,12 +33,13 @@ class CreatePlaidTables extends Migration
             $table->string('item_id')->nullable()->index();
             $table->foreign('item_id')->references('external_id')->on('items');
             $table->json('balances');
+            $table->json('numbers')->nullable();
             $table->string('name');
             $table->string('mask')->nullable();
             $table->string('official_name')->nullable();
             $table->string('type');
             $table->string('subtype');
-            $table->string('verification_status');
+            $table->string('verification_status')->nullable();
             $table->timestamps();
         });
 

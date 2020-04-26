@@ -19,7 +19,9 @@
 </template>
 
 <script>
-import Navigation from "./components/Navigation";
+import { mapActions } from 'vuex'
+
+import Navigation from './components/Navigation'
 
 export default {
     components: {
@@ -30,6 +32,12 @@ export default {
     },
     data: () => ({
         drawer: null
-    })
+    }),
+    methods: {
+        ...mapActions('sanctum', ['initializeCSRF'])
+    },
+    created() {
+        this.initializeCSRF()
+    }
 };
 </script>

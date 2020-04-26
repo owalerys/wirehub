@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Account;
 use App\Item;
 use Illuminate\Support\Facades\Http;
 
@@ -24,6 +25,11 @@ class Plaid
     private function getClientId()
     {
         return env('PLAID_CLIENT_ID');
+    }
+
+    private function getPublicKey()
+    {
+        return env('PLAID_PUBLIC_KEY');
     }
 
     private function getSecret()
@@ -50,9 +56,13 @@ class Plaid
             ]
         ));
 
-        if (!$response->ok()) return null;
+        if (!$response->ok()) throw new \Exception($response);
 
-        return $this->getItem($response['access_token']);
+        $item = $this->getItem($response['access_token']);
+
+        $this->getAccounts($item);
+
+        return $item;
     }
 
     private function getItem(string $accessToken): Item
@@ -61,12 +71,70 @@ class Plaid
             'access_token' => $accessToken
         ]));
 
-        return Item::updateOrCreate(
+        $item = Item::updateOrCreate(
             [ 'external_id' => $response['item']['item_id'] ],
             array_merge(
                 $response['item'],
-                ['access_token' => $accessToken]
+                [
+                    'external_id' => $response['item']['item_id'],
+                    'access_token' => $accessToken,
+                    'status' => $response['status']
+                ]
             )
         );
+
+        if (!$item->institution) {
+            $institutionResponse = $this->client->post('/institutions/get_by_id', [
+                'institution_id' => $response['item']['institution_id'],
+                'public_key' => $this->getPublicKey(),
+                'options' => [
+                    'include_optional_metadata' => true
+                ]
+            ]);
+
+            $item->institution = $institutionResponse['institution'];
+
+            $item->save();
+        }
+
+        return $item;
+    }
+
+    private function getAccounts(Item $item)
+    {
+        // EXTRACT
+        $response = $this->client->post('/auth/get', $this->withAuthentication([
+            'access_token' => $item->access_token
+        ]));
+
+        if (!$response->ok()) throw new \Exception($response);
+
+        // TRANSFORM
+        $accounts = [];
+
+        foreach ($response['accounts'] as $account) {
+            $accounts[$account['account_id']] = $account;
+            $accounts[$account['account_id']]['numbers'] = [];
+        }
+
+        foreach ($response['numbers'] as $type => $numbers) {
+            foreach ($numbers as $numberEntity) {
+                $accounts[$numberEntity['account_id']]['numbers'][$type] = $numberEntity;
+            }
+        }
+
+        // LOAD
+        foreach ($accounts as $account) {
+            $account = Account::updateOrCreate(
+                [ 'external_id' => $account['account_id'] ],
+                array_merge(
+                    $account,
+                    [
+                        'external_id' => $account['account_id'],
+                        'item_id' => $item->external_id
+                    ]
+                )
+            );
+        }
     }
 }
