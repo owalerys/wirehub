@@ -63,7 +63,10 @@ class Plaid
 
         return Item::updateOrCreate(
             [ 'external_id' => $response['item']['item_id'] ],
-            $response['item']
+            array_merge(
+                $response['item'],
+                ['access_token' => $accessToken]
+            )
         );
     }
 }
