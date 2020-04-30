@@ -12,8 +12,6 @@ class WebhookController extends Controller
 {
     public function plaid(Request $request)
     {
-        Bugsnag::notifyException(new \Exception($request));
-
         $this->validate($request, [
             'webhook_type' => 'required|string|in:TRANSACTIONS,ITEM',
             'webhook_code' => 'required|string'
