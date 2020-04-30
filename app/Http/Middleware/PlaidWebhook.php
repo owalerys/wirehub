@@ -29,10 +29,19 @@ class PlaidWebhook
         $verificationHeader = $request->header('Plaid-Verification');
         if (!$verificationHeader) return response(403);
 
+        // Simply base64 and json decode the header
         try {
             $parts = explode('.', $verificationHeader);
-            $decodedHeader = base64_decode($parts[0]);
+
+            if (count($parts) !== 3) throw new \Exception('JWT expected to have 3 parts');
+
+            $decodedHeader = base64_decode($parts[0], true);
+
+            if ($decodedHeader === false) throw new \Exception('Base64 string encountered out of alphabet character');
+
             $jsonDecoded = json_decode($decodedHeader, true);
+
+            if ($jsonDecoded === null) throw new \Exception('JSON decoding failed');
         } catch (\Exception $e) {
             return response(403);
         }
@@ -56,7 +65,7 @@ class PlaidWebhook
 
         $bodyHash = hash('sha256', $request->getContent());
 
-        if ($bodyHash !== $requestBodySha256) return response('Body hash did not match validated validated hash', 403);
+        if ($bodyHash !== $requestBodySha256) return response(403);
 
         return $next($request);
     }

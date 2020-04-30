@@ -54,7 +54,8 @@ export default {
                 key: process.env.MIX_PLAID_PUBLIC_KEY,
                 product: ["auth", "transactions"],
                 onSuccess: this.onSuccess,
-                onExit: this.onExit
+                onExit: this.onExit,
+                webhook: "https://wirehub.cc/api/webhook/plaid"
             });
 
             this.publicToken = "";
