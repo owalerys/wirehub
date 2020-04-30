@@ -12,6 +12,9 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
+            redirect: {
+                name: 'account-list'
+            }
         },
         {
             path: '/accounts',

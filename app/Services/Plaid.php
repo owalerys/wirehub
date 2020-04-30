@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Account;
 use App\Item;
+use App\Jobs\UpdateItem;
+use App\Transaction;
 use Illuminate\Support\Facades\Http;
 use Jose\Component\Core\JWK;
 
@@ -77,11 +79,13 @@ class Plaid
         return new JWK($response['key']);
     }
 
-    private function getItem(string $accessToken): Item
+    public function getItem(string $accessToken): Item
     {
         $response = $this->client->post('/item/get', $this->withAuthentication([
             'access_token' => $accessToken
         ]));
+
+        if (!$response->ok()) throw new \Exception($response);
 
         $item = Item::updateOrCreate(
             [ 'external_id' => $response['item']['item_id'] ],
@@ -112,7 +116,7 @@ class Plaid
         return $item;
     }
 
-    private function getAccounts(Item $item)
+    public function getAccounts(Item $item)
     {
         // EXTRACT
         $response = $this->client->post('/auth/get', $this->withAuthentication([
@@ -148,5 +152,53 @@ class Plaid
                 )
             );
         }
+    }
+
+    public function getTransactions(Item $item)
+    {
+        $count = 500;
+        $offset = 0;
+        $total = 500;
+        $fail = false;
+
+        while ($offset < $total && !$fail) {
+            $response = $this->client->post('/transactions/get', $this->withAuthentication([
+                'access_token' => $item->access_token,
+                'start_date' => date('Y-m-d', strtotime('-1 month')),
+                'end_date' => date('Y-m-d', strtotime('+1 day')),
+                'options' => [
+                    'count' => $count,
+                    'offset' => $offset
+                ]
+            ]));
+
+            if (!$response->ok()) {
+                $fail = true;
+                throw new \Exception($response);
+            }
+
+            $total = (int) $response['total_transactions'];
+
+            foreach ($response['transactions'] as $transaction) {
+                Transaction::updateOrCreate([
+                    'external_id' => $transaction['transaction_id'],
+                ], $transaction);
+            }
+
+            $offset += $count;
+        }
+
+        UpdateItem::dispatch($item->external_id);
+    }
+
+    public function removeTransactions(array $transactionIds)
+    {
+        $transactions = Transaction::whereIn('external_id', $transactionIds)->all();
+
+        foreach ($transactions as $transaction) {
+            $transaction->delete();
+        }
+
+        return;
     }
 }
