@@ -36,7 +36,7 @@ class WebhookController extends Controller
         $this->validate($request, [
             'webhook_code' => 'in:INITIAL_UPDATE,HISTORICAL_UPDATE,DEFAULT_UPDATE',
             'item_id' => 'required|string|exists:items,external_id',
-            'new_transactions' => 'required|integer'
+            // 'new_transactions' => 'required|integer'
         ]);
 
         UpdateTransactions::dispatch($request->input('item_id'));
