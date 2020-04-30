@@ -21,14 +21,14 @@ class WebhookController extends Controller
 
         $type = $request->input('webhook_type');
         $code = $request->input('webhook_code');
-        switch ($code) {
+        switch ($type) {
             case 'TRANSACTIONS':
-                if ($type === 'TRANSACTIONS_REMOVED') return $this->transactionsRemoved($request);
+                if ($code === 'TRANSACTIONS_REMOVED') return $this->transactionsRemoved($request);
                 return $this->transactionsUpdated($request);
             case 'ITEM':
-                if ($type === 'WEBHOOK_UPDATE_ACKNOWLEDGED') return $this->itemWebhookUpdated($request);
-                elseif ($type === 'PENDING_EXPIRATION') return $this->itemPendingExpiration($request);
-                elseif ($type === 'ERROR') return $this->itemError($request);
+                if ($code === 'WEBHOOK_UPDATE_ACKNOWLEDGED') return $this->itemWebhookUpdated($request);
+                elseif ($code === 'PENDING_EXPIRATION') return $this->itemPendingExpiration($request);
+                elseif ($code === 'ERROR') return $this->itemError($request);
         }
 
         return response()->json(['error' => 'Unsupported webhook_type/webhook_code combo.'], 400);
@@ -39,7 +39,7 @@ class WebhookController extends Controller
         $this->validate($request, [
             'webhook_code' => 'in:INITIAL_UPDATE,HISTORICAL_UPDATE,DEFAULT_UPDATE',
             'item_id' => 'required|string|exists:items,external_id',
-            // 'new_transactions' => 'required|integer'
+            'new_transactions' => 'required|integer'
         ]);
 
         UpdateTransactions::dispatch($request->input('item_id'));
