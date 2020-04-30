@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Account;
 use App\Item;
 use Illuminate\Support\Facades\Http;
+use Jose\Component\Core\JWK;
 
 class Plaid
 {
@@ -63,6 +64,17 @@ class Plaid
         $this->getAccounts($item);
 
         return $item;
+    }
+
+    public function getWebhookVerificationKey(string $keyId): JWK
+    {
+        $response = $this->client->post('/webhook_verification_key/get', $this->withAuthentication([
+            'key_id' => $keyId
+        ]));
+
+        if (!$response->ok()) throw new \Exception($response);
+
+        return new JWK($response['key']);
     }
 
     private function getItem(string $accessToken): Item

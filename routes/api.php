@@ -19,3 +19,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/account', 'AccountController@getAccounts');
 });
+
+Route::post('/webhook/plaid', 'WebhookController@plaid')->middleware('webhook.plaid');
