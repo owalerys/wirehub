@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/item/exchange', 'PlaidController@exchangeToken');
 
-    Route::get('/account', 'AccountController@getAccounts');
+    Route::get('/accounts', 'AccountController@getAccounts');
+    Route::get('/accounts/{accountId}', 'AccountController@getAccount');
+    Route::get('/accounts/{accountId}/transactions', 'AccountController@getAccountTransactions');
 });
 
 Route::post('/webhook/plaid', 'WebhookController@plaid')->middleware('webhook.plaid');

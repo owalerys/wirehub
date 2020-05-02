@@ -2,20 +2,38 @@
     <v-row justify="center" align="start">
         <v-col>
             <v-card>
-                <v-card-title>Accounts<v-spacer/><v-btn color="primary" :to="{ name: 'account-create' }">Create</v-btn></v-card-title>
+                <v-card-title
+                    >Accounts<v-spacer /><v-btn
+                        color="primary"
+                        :to="{ name: 'account-create' }"
+                        >Create</v-btn
+                    ></v-card-title
+                >
                 <v-data-table
                     :loading="loading"
                     :headers="headers"
                     :items="accounts"
-                    :items-per-page="5"
-                ></v-data-table>
+                    :items-per-page="10"
+                    @click:row="detail"
+                >
+                    <template v-slot:item.item.institution.name="slotProps">
+                        <v-avatar size="32">
+                            <img
+                                :src="
+                                    `data:image/png;base64, ${slotProps.item.item.institution.logo}`
+                                "
+                            />
+                        </v-avatar>
+                        {{ slotProps.item.item.institution.name }}
+                    </template>
+                </v-data-table>
             </v-card>
         </v-col>
     </v-row>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from "vuex";
 
 export default {
     data() {
@@ -36,26 +54,32 @@ export default {
         };
     },
     methods: {
-        ...mapActions('account', ['fetch']),
+        ...mapActions("account", ["fetch"]),
         async refresh() {
-            this.loading = true
+            this.loading = true;
 
             try {
-                await this.fetch()
-            } catch(e) {
-                console.error(e)
+                await this.fetch();
+            } catch (e) {
+                console.error(e);
             }
 
-            this.loading = false
+            this.loading = false;
+        },
+        async detail(row) {
+            this.$router.push({
+                name: "account-detail",
+                params: { accountId: row.external_id }
+            });
         }
     },
     computed: {
-        ...mapState('account', {
-            accounts: 'accounts'
+        ...mapState("account", {
+            accounts: "accounts"
         })
     },
     mounted() {
-        this.fetch()
+        this.fetch();
     }
 };
 </script>

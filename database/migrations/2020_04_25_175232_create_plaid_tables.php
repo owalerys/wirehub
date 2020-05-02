@@ -46,7 +46,7 @@ class CreatePlaidTables extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('external_id')->unique();
-            $table->string('account_id')->index();
+            $table->string('account_id');
             $table->foreign('account_id')->references('external_id')->on('accounts');
             $table->json('category')->nullable();
             $table->string('category_id')->nullable();
@@ -65,6 +65,8 @@ class CreatePlaidTables extends Migration
             $table->string('account_owner')->nullable();
             $table->string('transaction_code')->nullable();
             $table->timestamps();
+
+            $table->index(['account_id', 'date']);
         });
     }
 

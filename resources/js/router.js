@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 import AccountCreate from './pages/accounts/Create.vue'
+import AccountDetail from './pages/accounts/Detail.vue'
 import AccountList from './pages/accounts/List.vue'
 
 const router = new VueRouter({
@@ -25,6 +26,11 @@ const router = new VueRouter({
             path: '/accounts/create',
             component: AccountCreate,
             name: 'account-create'
+        },
+        {
+            path: '/accounts/:accountId',
+            component: AccountDetail,
+            name: 'account-detail'
         }
     ]
 })
