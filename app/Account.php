@@ -20,6 +20,11 @@ class Account extends Model
         return $this->belongsTo(Item::class, 'item_id', 'external_id');
     }
 
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class);
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class, 'account_id', 'external_id');
