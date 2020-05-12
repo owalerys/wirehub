@@ -70,7 +70,7 @@ export default {
             items: [
             { icon: "mdi-bank", text: "Bank Accounts", link: { name: 'account-list' } },
             { divider: true },
-            { icon: "mdi-account-group", text: "Merchants" },
+            { icon: "mdi-account-group", text: "Merchants", link: { name: 'team-list' } },
             { divider: true },
             { icon: "mdi-settings", text: "Settings" },
             { icon: "mdi-logout", text: "Log out" }
