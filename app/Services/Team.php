@@ -2,14 +2,16 @@
 
 namespace App\Services;
 
+use App\Notifications\UserTeamInvite;
+use App\Team as AppTeam;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 
 class Team
 {
-    public function createTeam($name, $contactName, $contactEmail)
+    public function createTeam($name, $contactName, $contactEmail, $invite = true)
     {
-        $team = new Team;
+        $team = new AppTeam;
 
         $team->name = $name;
 
@@ -37,7 +39,15 @@ class Team
 
         $owner->assignRole('owner');
 
-        // TODO send password reset email to account owner
+        if ($invite) $this->inviteMember($owner, $team);
+
         return [ $team, $owner ];
+    }
+
+    public function inviteMember(User $user, AppTeam $team)
+    {
+        $token = app(\Illuminate\Auth\Passwords\PasswordBroker::class)->createToken($user);
+
+        $user->notify(new UserTeamInvite($token, $team));
     }
 }
