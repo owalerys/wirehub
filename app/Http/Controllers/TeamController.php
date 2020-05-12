@@ -17,7 +17,7 @@ class TeamController extends Controller
 
     public function getTeam(int $teamId)
     {
-        $team = Team::where('id', $teamId)->with(['users', 'accounts', 'accounts.item']);
+        $team = Team::where('id', $teamId)->with(['users', 'accounts', 'accounts.item', 'users.roles'])->first();
 
         if (!$team) return response('', 404);
 
@@ -27,12 +27,13 @@ class TeamController extends Controller
     public function createTeam(Request $request, ServicesTeam $service)
     {
         $this->validate($request, [
+            'organization' => 'required|string',
             'name' => 'required|string',
-            'owner_name' => 'required|string',
-            'email' => 'required|email|unique:users,email'
+            'email' => 'required|email|unique:users,email',
+            'invite' => 'required|boolean'
         ]);
 
-        list($team, $owner) = $service->createTeam($request->input('name'), $request->input('contact_name'), $request->input('email'));
+        list($team, $owner) = $service->createTeam($request->input('organization'), $request->input('name'), $request->input('email'));
 
         return response()->json(['team' => $team, 'owner' => $owner]);
     }
