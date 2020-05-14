@@ -34,10 +34,22 @@ export default {
         drawer: null
     }),
     methods: {
-        ...mapActions('sanctum', ['initializeCSRF'])
+        ...mapActions('sanctum', ['initializeCSRF']),
+        ...mapActions('team', {
+            fetchTeams: 'fetch'
+        }),
+        ...mapActions('account', {
+            fetchAccounts: 'fetch'
+        }),
+        ...mapActions('user', {
+            fetchUser: 'fetch'
+        })
     },
     created() {
         this.initializeCSRF()
+        this.fetchTeams()
+        this.fetchAccounts()
+        this.fetchUser()
     }
 };
 </script>

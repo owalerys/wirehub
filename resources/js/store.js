@@ -5,6 +5,7 @@ import account from './store/account'
 import link from './store/link'
 import sanctum from './store/sanctum'
 import team from './store/team'
+import user from './store/user'
 
 Vue.use(Vuex)
 
@@ -13,7 +14,8 @@ const store = new Vuex.Store({
         account,
         link,
         sanctum,
-        team
+        team,
+        user
     }
 })
 
