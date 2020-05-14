@@ -111,7 +111,7 @@ export default {
     }),
 
     methods: {
-        ...mapActions("team", ["create"]),
+        ...mapActions("team", ["create", 'fetch']),
         async submit() {
             if (!this.$refs.observer.validate()) return;
 
@@ -121,6 +121,8 @@ export default {
                 email: this.email,
                 invite: this.invite
             });
+
+            this.fetch();
 
             this.$router.push({
                 name: "team-detail",

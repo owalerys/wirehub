@@ -1,99 +1,124 @@
 <template>
-    <v-row justify="center" align="start">
-        <v-col>
-            <v-card v-if="account"
-                ><v-card-title
-                    ><v-avatar>
-                        <img
-                            :src="
-                                `data:image/png;base64, ${account.item.institution.logo}`
-                            "
-                        />
-                    </v-avatar>
-                    <v-spacer
-                /></v-card-title>
-                <v-card-text>
-                    Currency: {{ account.balances.iso_currency_code }} <br>
-                    Balance: {{ account.balances.current | money }}
-                </v-card-text>
-            </v-card>
-            <v-card>
-                <v-card-title
-                    >Transactions<v-spacer /></v-card-title
-                >
-                <v-data-table
-                    :loading="loading"
-                    :headers="headers"
-                    :items="transactions"
-                    :items-per-page="5"
-                >
-                </v-data-table>
-            </v-card>
+    <v-row justify="start" align="start">
+        <v-col md="6" cols="12">
+            <AccountCard :loading="loading" :account="account" />
         </v-col>
+        <v-col md="6" cols="12">
+            <TeamCard label="Merchant" :loading="loading" :team="team" :manager="manager" @change="merchantDialog = true" :actions="true" />
+        </v-col>
+        <v-col cols="12">
+            <TransactionsTable :loading="loading" :transactions="transactions" />
+        </v-col>
+        <v-dialog v-model="merchantDialog" scrollable max-width="300px">
+            <v-card>
+                <v-card-title>Change Merchant</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text style="height: 300px;">
+                    <v-radio-group v-model="selectedMerchant" column>
+                        <v-radio v-for="team in teams" :key="team.id" :label="team.name" :value="team.id"></v-radio>
+                    </v-radio-group>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="merchantDialog = false"
+                        :disabled="loading"
+                        >Close</v-btn
+                    >
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="linkMerchant()"
+                        :loading="loading"
+                        >Save</v-btn
+                    >
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-row>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-import numeral from 'numeral'
-import api from '../../api'
+import api from "../../api";
+import Vue from "vue";
+
+import AccountCard from '../../components/cards/Account'
+import TeamCard from '../../components/cards/Team'
+import TransactionsTable from '../../components/tables/Transactions'
 
 export default {
-    filters: {
-        money(val) {
-            return numeral(val).format('$0,0.00')
-        }
+    components: {
+        AccountCard,
+        TeamCard,
+        TransactionsTable
     },
     data() {
         return {
-            headers: [
-                {
-                    text: "Date",
-                    align: "start",
-                    value: "date"
-                },
-                { text: "Name", value: "name" },
-                { text: "Amount", value: "amount" },
-                { text: "Currency", value: "iso_currency_code" }
-            ],
             loading: false,
-            transactions: []
+            transactions: [],
+            account: {},
+            merchantDialog: false,
+            selectedMerchant: null
         };
     },
     computed: {
-        ...mapState("account", {
-            accounts: "accounts"
-        }),
-        account() {
-            return this.accounts.find(account => {
-                return account.external_id === this.$route.params.accountId;
-            });
-        },
         accountId() {
-            return this.$route.params.accountId
+            return this.$route.params.accountId;
+        },
+        ...mapState('team', {
+            teams: 'teams'
+        }),
+        team() {
+            return this.account && this.account.teams && this.account.teams.length ? this.account.teams[0] : null
+        },
+        manager() {
+            return this.team ? this.team.users[0] : null
         }
     },
     methods: {
-        ...mapActions("account", ["fetch"]),
         async load() {
-            this.loading = true
+            this.loading = true;
 
             try {
-                const response = await api.get(`/accounts/${this.accountId}/transactions`)
+                const [
+                    transactionsResponse,
+                    accountResponse
+                ] = await Promise.all([
+                    api.get(`/accounts/${this.accountId}/transactions`),
+                    api.get(`/accounts/${this.accountId}`)
+                ]);
 
-                this.transactions.splice(0)
-                this.transactions.push(...response.data.data)
+                this.transactions.splice(0);
+                this.transactions.push(...transactionsResponse.data);
+
+                Vue.set(this, "account", accountResponse.data);
+
+                this.selectedMerchant = this.account && this.account.teams && this.account.teams.length ? this.account.teams[0].id : null
+            } finally {
+                this.loading = false;
+            }
+        },
+        async linkMerchant() {
+            this.loading = true;
+
+            try {
+                const response = await api.put(`/accounts/${this.accountId}/team`, { team_id: this.selectedMerchant });
+
+                await this.load()
+
+                this.merchantDialog = false
+            } catch (e) {
+                console.error(e)
             } finally {
                 this.loading = false
             }
         }
     },
     created() {
-        if (!this.account) {
-            this.fetch()
-        }
-
-        this.load()
+        this.load();
     }
 };
 </script>

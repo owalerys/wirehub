@@ -30,15 +30,9 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import numeral from 'numeral'
 import api from '../../api'
 
 export default {
-    filters: {
-        money(val) {
-            return numeral(val).format('$0,0.00')
-        }
-    },
     data() {
         return {
             headers: [
