@@ -20,10 +20,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/accounts', 'AccountController@getAccounts');
     Route::get('/accounts/{accountId}', 'AccountController@getAccount');
     Route::get('/accounts/{accountId}/transactions', 'AccountController@getAccountTransactions');
+    Route::put('/accounts/{accountId}/team', 'AccountController@putTeamLink');
 
     Route::get('/teams', 'TeamController@getTeams');
     Route::get('/teams/{teamId}', 'TeamController@getTeam');
     Route::post('/teams', 'TeamController@createTeam');
+
+    Route::get('/user', 'UserController@index');
 });
 
 Route::post('/webhook/plaid', 'WebhookController@plaid')->middleware('webhook.plaid');
