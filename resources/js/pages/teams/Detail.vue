@@ -1,29 +1,10 @@
 <template>
-    <v-row justify="center" align="start">
-        <v-col>
-            <v-card v-if="team"
-                ><v-card-title
-                    >
-                    {{ team.name }}
-                    <v-spacer
-                /></v-card-title>
-                <!-- <v-card-text>
-                    Currency: {{ team.balances.iso_currency_code }} <br>
-                    Balance: {{ team.balances.current | money }}
-                </v-card-text> -->
-            </v-card>
-            <v-card>
-                <!-- <v-card-title
-                    >Transactions<v-spacer /></v-card-title
-                >
-                <v-data-table
-                    :loading="loading"
-                    :headers="headers"
-                    :items="transactions"
-                    :items-per-page="5"
-                >
-                </v-data-table> -->
-            </v-card>
+    <v-row justify="start" align="start">
+        <v-col cols="6">
+            <TeamCard label="Merchant" :team="team" :loading="loading" :manager="manager" />
+        </v-col>
+        <v-col cols="12">
+            <AccountsTable :accounts="accounts" :loading="loading" :per-page="5" />
         </v-col>
     </v-row>
 </template>
@@ -32,19 +13,16 @@
 import { mapActions, mapState } from "vuex";
 import api from '../../api'
 
+import TeamCard from '../../components/cards/Team'
+import AccountsTable from '../../components/tables/Accounts'
+
 export default {
+    components: {
+        AccountsTable,
+        TeamCard
+    },
     data() {
         return {
-            headers: [
-                {
-                    text: "Date",
-                    align: "start",
-                    value: "date"
-                },
-                { text: "Name", value: "name" },
-                { text: "Amount", value: "amount" },
-                { text: "Currency", value: "iso_currency_code" }
-            ],
             loading: false,
             team: {}
         };
@@ -52,6 +30,12 @@ export default {
     computed: {
         teamId() {
             return this.$route.params.teamId
+        },
+        accounts() {
+            return this.team && this.team.accounts ? this.team.accounts : []
+        },
+        manager() {
+            return this.team && this.team.users && this.team.users.length ? this.team.users[0] : null
         }
     },
     methods: {

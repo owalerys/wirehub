@@ -61,8 +61,15 @@
                                 ></v-checkbox>
                             </ValidationProvider>
 
-                            <v-btn class="mr-4" @click="submit">submit</v-btn>
-                            <v-btn @click="clear">clear</v-btn>
+                            <v-btn
+                                class="mr-4"
+                                @click="submit"
+                                :loading="loading"
+                                >submit</v-btn
+                            >
+                            <v-btn @click="clear" :disabled="loading"
+                                >clear</v-btn
+                            >
                         </form>
                     </ValidationObserver>
                 </v-card-text>
@@ -107,27 +114,36 @@ export default {
         organization: "",
         name: "",
         email: "",
-        invite: true
+        invite: true,
+        loading: false
     }),
 
     methods: {
-        ...mapActions("team", ["create", 'fetch']),
+        ...mapActions("team", ["create", "fetch"]),
         async submit() {
             if (!this.$refs.observer.validate()) return;
 
-            const { team, owner } = await this.create({
-                organization: this.organization,
-                name: this.name,
-                email: this.email,
-                invite: this.invite
-            });
+            this.loading = true;
 
-            this.fetch();
+            try {
+                const { team, owner } = await this.create({
+                    organization: this.organization,
+                    name: this.name,
+                    email: this.email,
+                    invite: this.invite
+                });
 
-            this.$router.push({
-                name: "team-detail",
-                params: { teamId: team.id }
-            });
+                this.fetch();
+
+                this.$router.push({
+                    name: "team-detail",
+                    params: { teamId: team.id }
+                });
+            } catch (e) {
+                console.error(e);
+            } finally {
+                this.loading = false;
+            }
         },
         clear() {
             this.organization = "";

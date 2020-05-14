@@ -12,7 +12,7 @@
             :loading="loading"
             :headers="headers"
             :items="accounts"
-            :items-per-page="10"
+            :items-per-page="perPage ? perPage : 10"
             @click:row="detail"
         >
             <template v-slot:item.item.institution.name="slotProps">
@@ -31,7 +31,7 @@
 
 <script>
 export default {
-    props: ["actions", "loading", "accounts"],
+    props: ["actions", "loading", "accounts", 'perPage'],
     data() {
         return {
             headers: [
