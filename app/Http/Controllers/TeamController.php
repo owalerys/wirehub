@@ -17,7 +17,7 @@ class TeamController extends Controller
 
     public function getTeam(int $teamId)
     {
-        $team = Team::where('id', $teamId)->with(['users', 'accounts', 'accounts.item', 'users.roles'])->first();
+        $team = Team::where('id', $teamId)->with(['accounts.item', 'users.roles'])->first();
 
         if (!$team) return response('', 404);
 
