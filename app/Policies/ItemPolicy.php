@@ -3,12 +3,13 @@
 namespace App\Policies;
 
 use App\Item;
+use App\Policies\Traits\UserHelper;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ItemPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, UserHelper;
 
     /**
      * Determine whether the user can view any models.
@@ -41,7 +42,7 @@ class ItemPolicy
      */
     public function create(User $user)
     {
-        //
+        return $this->userIsAdmin($user);
     }
 
     /**
