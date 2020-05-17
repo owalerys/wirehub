@@ -24,10 +24,10 @@ export default {
     components: {
         Confirmation
     },
-    props: ['loading', 'transactions'],
-    data() {
-        return {
-            headers: [
+    props: ['loading', 'transactions', 'actions'],
+    computed: {
+        headers() {
+            const headers = [
                 {
                     text: "Date",
                     align: "start",
@@ -37,8 +37,13 @@ export default {
                 { text: "Amount", value: "amount" },
                 { text: "Currency", value: "iso_currency_code" },
                 { text: "Confirmed", value: "confirmed" },
-                { text: "Actions", value: "actions" }
-            ],
+            ]
+
+            if (this.actions) {
+                headers.push({ text: "Actions", value: "actions", sortable: false })
+            }
+
+            return headers
         }
     },
     methods: {

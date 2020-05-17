@@ -3,14 +3,14 @@
         <v-col md="6" cols="12">
             <AccountCard :loading="loading" :account="account" />
         </v-col>
-        <v-col md="6" cols="12">
+        <v-col v-if="isAdmin" md="6" cols="12">
             <TeamCard
                 label="Merchant"
                 :loading="loading"
                 :team="team"
                 :manager="manager"
                 @change="merchantDialog = true"
-                :actions="true"
+                :actions="isAdmin"
             />
         </v-col>
         <v-col cols="12">
@@ -18,6 +18,7 @@
                 :loading="loading"
                 :transactions="transactions"
                 @confirmed="updateTransactionConfirmation"
+                :actions="isTeamMember"
             />
         </v-col>
         <v-dialog v-model="merchantDialog" scrollable max-width="300px">
@@ -57,7 +58,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 import api from "../../api";
 import Vue from "vue";
 
@@ -87,6 +88,7 @@ export default {
         ...mapState("team", {
             teams: "teams"
         }),
+        ...mapGetters('user', ['isTeamMember', 'isAdmin']),
         team() {
             return this.account &&
                 this.account.teams &&

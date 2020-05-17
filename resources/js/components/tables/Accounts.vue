@@ -42,7 +42,7 @@ export default {
                 },
                 { text: "Institution", value: "item.institution.name" },
                 { text: "Account Number", value: "mask" },
-                { text: "Balance", value: "balances.current" },
+                { text: "Balance", value: "balances.current", sortable: false },
                 { text: "Currency", value: "balances.iso_currency_code" },
                 { text: "Type", value: "type" }
             ]

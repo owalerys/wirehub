@@ -1,13 +1,13 @@
 <template>
     <v-row justify="center" align="start">
         <v-col>
-            <AccountsTable :loading="loading" :accounts="accounts" :actions="true" />
+            <AccountsTable :loading="loading" :accounts="accounts" :actions="isAdmin" />
         </v-col>
     </v-row>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 
 import AccountsTable from '../../components/tables/Accounts'
 
@@ -37,7 +37,8 @@ export default {
     computed: {
         ...mapState("account", {
             accounts: "accounts"
-        })
+        }),
+        ...mapGetters('user', ['isAdmin'])
     },
     mounted() {
         this.fetch();

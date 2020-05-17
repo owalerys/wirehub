@@ -44,38 +44,66 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
     props: {
         value: {
             type: Boolean
         }
     },
+    methods: {
+        input(val) {
+            this.$emit("input", val);
+        }
+    },
     computed: {
         binding: {
             get() {
-                return this.value
+                return this.value;
             },
             set(val) {
-                this.input(val)
+                this.input(val);
             }
-        }
-    },
-    methods: {
-        input(val) {
-            this.$emit('input', val)
-        }
-    },
-    data() {
-        return {
-            items: [
-            { icon: "mdi-bank", text: "Bank Accounts", link: { name: 'account-list' } },
-            { divider: true },
-            { icon: "mdi-account-group", text: "Merchants", link: { name: 'team-list' } },
-            { divider: true },
-            { icon: "mdi-settings", text: "Settings" },
-            { icon: "mdi-logout", text: "Log out", link: { name: 'logout' } }
-        ]
+        },
+        ...mapGetters('user', ['isAdmin']),
+        items() {
+            if (this.isAdmin) return [
+                {
+                    icon: "mdi-bank",
+                    text: "Bank Accounts",
+                    link: { name: "account-list" }
+                },
+                { divider: true },
+                {
+                    icon: "mdi-account-group",
+                    text: "Merchants",
+                    link: { name: "team-list" }
+                },
+                { divider: true },
+                { icon: "mdi-settings", text: "Settings" },
+                {
+                    icon: "mdi-logout",
+                    text: "Log out",
+                    link: { name: "logout" }
+                }
+            ];
+
+            return [
+                {
+                    icon: "mdi-bank",
+                    text: "Bank Accounts",
+                    link: { name: "account-list" }
+                },
+                { divider: true },
+                { icon: "mdi-settings", text: "Settings" },
+                {
+                    icon: "mdi-logout",
+                    text: "Log out",
+                    link: { name: "logout" }
+                }
+            ];
         }
     }
-}
+};
 </script>
