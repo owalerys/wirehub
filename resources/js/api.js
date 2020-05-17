@@ -6,3 +6,7 @@ const instance = axios.create({
 })
 
 export default instance
+
+export const withoutBase = axios.create({
+    withCredentials: true
+})

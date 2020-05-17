@@ -1,4 +1,4 @@
-import api from "../api";
+import api, { withoutBase } from "../api";
 import Vue from 'vue';
 
 export default {
@@ -13,6 +13,9 @@ export default {
             const response = await api.get("/user");
 
             context.commit("SET_USER", { user: response.data });
+        },
+        async logout() {
+            const respones = await withoutBase.post('/logout');
         }
     },
     mutations: {

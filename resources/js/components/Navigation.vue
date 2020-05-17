@@ -73,7 +73,7 @@ export default {
             { icon: "mdi-account-group", text: "Merchants", link: { name: 'team-list' } },
             { divider: true },
             { icon: "mdi-settings", text: "Settings" },
-            { icon: "mdi-logout", text: "Log out" }
+            { icon: "mdi-logout", text: "Log out", link: { name: 'logout' } }
         ]
         }
     }
