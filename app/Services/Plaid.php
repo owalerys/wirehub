@@ -154,7 +154,7 @@ class Plaid
         }
     }
 
-    public function getTransactions(Item $item, string $range)
+    public function getTransactions(Item $item, string $range = 'month')
     {
         if (!in_array($range, ['week', 'month', 'year'])) throw new \Exception("Invalid range: $range");
 
