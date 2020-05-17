@@ -10,6 +10,8 @@ class TeamController extends Controller
 {
     public function getTeams()
     {
+        $this->authorize('viewAny', Team::class);
+
         $teams = Team::all();
 
         return response()->json($teams);
@@ -21,11 +23,15 @@ class TeamController extends Controller
 
         if (!$team) return response('', 404);
 
+        $this->authorize('view', $team);
+
         return response()->json($team);
     }
 
     public function createTeam(Request $request, ServicesTeam $service)
     {
+        $this->authorize('create', Team::class);
+
         $this->validate($request, [
             'organization' => 'required|string',
             'name' => 'required|string',

@@ -2,13 +2,14 @@
 
 namespace App\Policies;
 
+use App\Policies\Traits\UserHelper;
 use App\Team;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TeamPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, UserHelper;
 
     /**
      * Determine whether the user can view any models.
@@ -18,7 +19,7 @@ class TeamPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $this->userIsAdmin($user);
     }
 
     /**
@@ -30,7 +31,7 @@ class TeamPolicy
      */
     public function view(User $user, Team $team)
     {
-        //
+        return $this->userIsAdmin($user) || ($this->userIsTeamMember($user) && $user->team_id === $team->id);
     }
 
     /**
@@ -41,7 +42,7 @@ class TeamPolicy
      */
     public function create(User $user)
     {
-        //
+        return $this->userIsAdmin($user);
     }
 
     /**
