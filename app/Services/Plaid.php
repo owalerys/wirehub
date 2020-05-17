@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Account;
 use App\Item;
+use App\Jobs\QueueTransactionNotification;
 use App\Jobs\UpdateItem;
 use App\Transaction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Jose\Component\Core\JWK;
 
@@ -154,7 +156,26 @@ class Plaid
         }
     }
 
-    public function getTransactions(Item $item, string $range = 'month')
+    protected function getNotificationMap(Item $item)
+    {
+        $itemId = $item->external_id;
+        $notificationMap = [];
+
+        $query = DB::select("select t.external_id from transactions t
+        inner join accounts a on a.external_id = t.account_id
+        inner join items i on i.external_id = a.item_id
+        where i.external_id = '$itemId'");
+
+        $transactionIds = collect($query)->pluck('external_id')->all();
+
+        foreach ($transactionIds as $trx) {
+            $notificationMap[$trx] = true;
+        }
+
+        return $notificationMap;
+    }
+
+    public function getTransactions(Item $item, string $range = 'month', bool $notify = false)
     {
         if (!in_array($range, ['week', 'month', 'year'])) throw new \Exception("Invalid range: $range");
 
@@ -162,6 +183,10 @@ class Plaid
         $offset = 0;
         $total = 500;
         $fail = false;
+
+        if ($notify) {
+            $notificationMap = $this->getNotificationMap($item);
+        }
 
         while ($offset < $total && !$fail) {
             $response = $this->client->post('/transactions/get', $this->withAuthentication([
@@ -182,9 +207,13 @@ class Plaid
             $total = (int) $response['total_transactions'];
 
             foreach ($response['transactions'] as $transaction) {
+                $externalId = $transaction['transaction_id'];
+
                 Transaction::updateOrCreate([
-                    'external_id' => $transaction['transaction_id'],
+                    'external_id' => $externalId,
                 ], $transaction);
+
+                if ($notify && !isset($notificationMap[$externalId])) QueueTransactionNotification::dispatch($externalId);
             }
 
             $offset += $count;

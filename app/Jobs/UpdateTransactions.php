@@ -49,7 +49,7 @@ class UpdateTransactions implements ShouldQueue
             }
 
             try {
-                $service->getTransactions($item, $rangeMap[$this->type]);
+                $service->getTransactions($item, $rangeMap[$this->type], $this->type === 'DEFAULT_UPDATE');
             } catch (\Exception $e) {
                 $this->fail($e);
                 return;
