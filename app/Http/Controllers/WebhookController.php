@@ -40,7 +40,7 @@ class WebhookController extends Controller
             'new_transactions' => 'required|integer'
         ]);
 
-        UpdateTransactions::dispatch($request->input('item_id'));
+        UpdateTransactions::dispatch($request->input('item_id'), $request->input('webhook_code'));
 
         return response()->json(['message' => 'Transaction update acknowledged.']);
     }

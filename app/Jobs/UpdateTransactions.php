@@ -15,15 +15,17 @@ class UpdateTransactions implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $itemId;
+    protected $type;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $itemId)
+    public function __construct(string $itemId, string $type)
     {
         $this->itemId = $itemId;
+        $this->type = $type;
     }
 
     /**
@@ -33,6 +35,12 @@ class UpdateTransactions implements ShouldQueue
      */
     public function handle(Plaid $service)
     {
+        $rangeMap = [
+            'INITIAL_UPDATE' => 'month',
+            'HISTORICAL_UPDATE' => 'year',
+            'DEFAULT_UPDATE' => 'week'
+        ];
+
         try {
             $item = Item::where('external_id', $this->itemId)->first();
 
@@ -41,7 +49,7 @@ class UpdateTransactions implements ShouldQueue
             }
 
             try {
-                $service->getTransactions($item);
+                $service->getTransactions($item, $rangeMap[$this->type]);
             } catch (\Exception $e) {
                 $this->fail($e);
                 return;
