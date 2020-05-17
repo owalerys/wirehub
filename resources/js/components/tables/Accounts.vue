@@ -25,6 +25,9 @@
                 </v-avatar>
                 {{ slotProps.item.item.institution.name }}
             </template>
+            <template v-slot:item.mask="slotProps">
+                ***{{ slotProps.value }}
+            </template>
             <template v-slot:item.balances.current="slotProps">
                 {{ slotProps.value | money }}
             </template>
@@ -44,7 +47,7 @@ export default {
                     value: "name"
                 },
                 { text: "Institution", value: "item.institution.name" },
-                { text: "Account Number", value: "mask" },
+                { text: "Last 4", value: "mask" },
                 { text: "Balance", value: "balances.current", sortable: false },
                 { text: "Currency", value: "balances.iso_currency_code" },
                 { text: "Type", value: "type" }
