@@ -154,8 +154,10 @@ class Plaid
         }
     }
 
-    public function getTransactions(Item $item)
+    public function getTransactions(Item $item, string $range)
     {
+        if (!in_array($range, ['week', 'month', 'year'])) throw new \Exception("Invalid range: $range");
+
         $count = 500;
         $offset = 0;
         $total = 500;
@@ -164,7 +166,7 @@ class Plaid
         while ($offset < $total && !$fail) {
             $response = $this->client->post('/transactions/get', $this->withAuthentication([
                 'access_token' => $item->access_token,
-                'start_date' => date('Y-m-d', strtotime('-1 month')),
+                'start_date' => date('Y-m-d', strtotime("-1 $range")),
                 'end_date' => date('Y-m-d', strtotime('+1 day')),
                 'options' => [
                     'count' => $count,

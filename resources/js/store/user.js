@@ -9,10 +9,14 @@ export default {
         };
     },
     actions: {
-        async fetch(context) {
-            const response = await api.get("/user");
+        async fetch(context, user = null) {
+            if (!user) {
+                const response = await api.get("/user");
+            }
 
-            context.commit("SET_USER", { user: response.data });
+            const userForStore = user ? user : response.data
+
+            context.commit("SET_USER", { user: userForStore });
         },
         async logout() {
             const respones = await withoutBase.post('/logout');

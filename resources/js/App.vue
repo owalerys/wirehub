@@ -49,7 +49,7 @@ export default {
         this.initializeCSRF()
         this.fetchTeams()
         this.fetchAccounts()
-        this.fetchUser()
+        this.fetchUser(window.user ? window.user : null)
     }
 };
 </script>

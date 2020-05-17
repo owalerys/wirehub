@@ -18,6 +18,10 @@
 <body>
     <div id="app"></div>
 
+    <script>
+        window.user = @json(Auth::user()->load('roles.permissions'))
+    </script>
+
     <!-- Scripts -->
     <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
     <script src="{{ mix('dist/js/app.js') }}"></script>
