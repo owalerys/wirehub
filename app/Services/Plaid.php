@@ -193,6 +193,17 @@ class Plaid
         UpdateItem::dispatch($item->external_id);
     }
 
+    public function forceRefreshTransactions(Item $item)
+    {
+        $response = $this->client->post('/transactions/refresh', $this->withAuthentication([
+            'access_token' => $item->access_token,
+        ]));
+
+        if (!$response->ok()) {
+            throw new \Exception($response);
+        }
+    }
+
     public function removeTransactions(array $transactionIds)
     {
         $transactions = Transaction::whereIn('external_id', $transactionIds)->all();
