@@ -25,6 +25,9 @@
                 </v-avatar>
                 {{ slotProps.item.item.institution.name }}
             </template>
+            <template v-slot:item.balances.current="slotProps">
+                {{ slotProps.value | money }}
+            </template>
         </v-data-table>
     </v-card>
 </template>

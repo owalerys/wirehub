@@ -7,6 +7,9 @@
             :items="transactions"
             :items-per-page="5"
         >
+            <template v-slot:item.amount="slotProps">
+                {{ slotProps.value | money }}
+            </template>
             <template v-slot:item.confirmed="slotProps">
                 {{ slotProps.item.confirmed ? 'Yes' : 'No' }}
             </template>
