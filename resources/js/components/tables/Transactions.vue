@@ -7,12 +7,23 @@
             :items="transactions"
             :items-per-page="5"
         >
+            <template v-slot:item.confirmed="slotProps">
+                {{ slotProps.item.confirmed ? 'Yes' : 'No' }}
+            </template>
+            <template v-slot:item.actions="slotProps">
+                <Confirmation :transaction="slotProps.item" @confirmed="updateConfirmedStatus(slotProps.item.external_id, $event)" />
+            </template>
         </v-data-table>
     </v-card>
 </template>
 
 <script>
+import Confirmation from '../Confirmation'
+
 export default {
+    components: {
+        Confirmation
+    },
     props: ['loading', 'transactions'],
     data() {
         return {
@@ -24,8 +35,15 @@ export default {
                 },
                 { text: "Name", value: "name" },
                 { text: "Amount", value: "amount" },
-                { text: "Currency", value: "iso_currency_code" }
+                { text: "Currency", value: "iso_currency_code" },
+                { text: "Confirmed", value: "confirmed" },
+                { text: "Actions", value: "actions" }
             ],
+        }
+    },
+    methods: {
+        updateConfirmedStatus(externalId, value) {
+            this.$emit('confirmed', { externalId, confirmed: value })
         }
     }
 }

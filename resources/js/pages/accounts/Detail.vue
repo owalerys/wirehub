@@ -4,10 +4,21 @@
             <AccountCard :loading="loading" :account="account" />
         </v-col>
         <v-col md="6" cols="12">
-            <TeamCard label="Merchant" :loading="loading" :team="team" :manager="manager" @change="merchantDialog = true" :actions="true" />
+            <TeamCard
+                label="Merchant"
+                :loading="loading"
+                :team="team"
+                :manager="manager"
+                @change="merchantDialog = true"
+                :actions="true"
+            />
         </v-col>
         <v-col cols="12">
-            <TransactionsTable :loading="loading" :transactions="transactions" />
+            <TransactionsTable
+                :loading="loading"
+                :transactions="transactions"
+                @confirmed="updateTransactionConfirmation"
+            />
         </v-col>
         <v-dialog v-model="merchantDialog" scrollable max-width="300px">
             <v-card>
@@ -15,7 +26,12 @@
                 <v-divider></v-divider>
                 <v-card-text style="height: 300px;">
                     <v-radio-group v-model="selectedMerchant" column>
-                        <v-radio v-for="team in teams" :key="team.id" :label="team.name" :value="team.id"></v-radio>
+                        <v-radio
+                            v-for="team in teams"
+                            :key="team.id"
+                            :label="team.name"
+                            :value="team.id"
+                        ></v-radio>
                     </v-radio-group>
                 </v-card-text>
                 <v-divider></v-divider>
@@ -45,9 +61,9 @@ import { mapActions, mapState } from "vuex";
 import api from "../../api";
 import Vue from "vue";
 
-import AccountCard from '../../components/cards/Account'
-import TeamCard from '../../components/cards/Team'
-import TransactionsTable from '../../components/tables/Transactions'
+import AccountCard from "../../components/cards/Account";
+import TeamCard from "../../components/cards/Team";
+import TransactionsTable from "../../components/tables/Transactions";
 
 export default {
     components: {
@@ -68,14 +84,18 @@ export default {
         accountId() {
             return this.$route.params.accountId;
         },
-        ...mapState('team', {
-            teams: 'teams'
+        ...mapState("team", {
+            teams: "teams"
         }),
         team() {
-            return this.account && this.account.teams && this.account.teams.length ? this.account.teams[0] : null
+            return this.account &&
+                this.account.teams &&
+                this.account.teams.length
+                ? this.account.teams[0]
+                : null;
         },
         manager() {
-            return this.team ? this.team.users[0] : null
+            return this.team ? this.team.users[0] : null;
         }
     },
     methods: {
@@ -96,7 +116,12 @@ export default {
 
                 Vue.set(this, "account", accountResponse.data);
 
-                this.selectedMerchant = this.account && this.account.teams && this.account.teams.length ? this.account.teams[0].id : null
+                this.selectedMerchant =
+                    this.account &&
+                    this.account.teams &&
+                    this.account.teams.length
+                        ? this.account.teams[0].id
+                        : null;
             } finally {
                 this.loading = false;
             }
@@ -105,16 +130,26 @@ export default {
             this.loading = true;
 
             try {
-                const response = await api.put(`/accounts/${this.accountId}/team`, { team_id: this.selectedMerchant });
+                const response = await api.put(
+                    `/accounts/${this.accountId}/team`,
+                    { team_id: this.selectedMerchant }
+                );
 
-                await this.load()
+                await this.load();
 
-                this.merchantDialog = false
+                this.merchantDialog = false;
             } catch (e) {
-                console.error(e)
+                console.error(e);
             } finally {
-                this.loading = false
+                this.loading = false;
             }
+        },
+        updateTransactionConfirmation({ externalId, confirmed }) {
+            const transaction = this.transactions.find(
+                transaction => transaction.external_id === externalId
+            );
+
+            transaction.confirmed = confirmed;
         }
     },
     created() {

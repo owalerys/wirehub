@@ -26,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/teams/{teamId}', 'TeamController@getTeam');
     Route::post('/teams', 'TeamController@createTeam');
 
+    Route::put('/transactions/{transactionId}/confirm', 'TransactionController@confirm');
+
     Route::get('/user', 'UserController@index');
 });
 
