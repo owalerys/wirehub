@@ -235,7 +235,7 @@ class Plaid
 
     public function removeTransactions(array $transactionIds)
     {
-        $transactions = Transaction::whereIn('external_id', $transactionIds)->all();
+        $transactions = Transaction::whereIn('external_id', $transactionIds)->get();
 
         foreach ($transactions as $transaction) {
             $transaction->delete();
