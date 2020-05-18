@@ -167,6 +167,7 @@ export default {
         })
     },
     methods: {
+        ...mapActions('user', ['fetch']),
         async submitAccount() {
             if (!this.$refs.accountObserver.validate()) return;
 
@@ -179,6 +180,8 @@ export default {
                 if (this.email && this.email !== this.user.email) data.email = this.email
 
                 const response = await api.patch('/user', data)
+
+                this.fetch()
             } catch (e) {
                 if (e.response.status === 422 && e.response.data.errors) {
                     this.$refs.accountObserver.setErrors(e.response.data.errors)
