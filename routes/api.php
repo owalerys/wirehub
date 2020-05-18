@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/transactions/{transactionId}/confirm', 'TransactionController@confirm');
 
     Route::get('/user', 'UserController@index');
+    Route::patch('/user', 'UserController@update');
+    Route::put('/user/password', 'UserController@updatePassword');
 });
 
 Route::post('/webhook/plaid', 'WebhookController@plaid')->middleware('webhook.plaid');
