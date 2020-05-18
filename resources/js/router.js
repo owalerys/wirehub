@@ -9,6 +9,8 @@ import AccountList from "./pages/accounts/List.vue";
 
 import Logout from './pages/Logout.vue';
 
+import Settings from './pages/Settings.vue';
+
 import TeamCreate from "./pages/teams/Create.vue";
 import TeamDetail from "./pages/teams/Detail.vue";
 import TeamList from "./pages/teams/List.vue";
@@ -57,6 +59,11 @@ const router = new VueRouter({
             path: '/logout',
             component: Logout,
             name: 'logout'
+        },
+        {
+            path: '/settings',
+            component: Settings,
+            name: 'settings'
         }
     ]
 });

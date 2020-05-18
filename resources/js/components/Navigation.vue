@@ -66,28 +66,33 @@ export default {
                 this.input(val);
             }
         },
-        ...mapGetters('user', ['isAdmin']),
+        ...mapGetters("user", ["isAdmin"]),
         items() {
-            if (this.isAdmin) return [
-                {
-                    icon: "mdi-bank",
-                    text: "Bank Accounts",
-                    link: { name: "account-list" }
-                },
-                { divider: true },
-                {
-                    icon: "mdi-account-group",
-                    text: "Merchants",
-                    link: { name: "team-list" }
-                },
-                { divider: true },
-                { icon: "mdi-settings", text: "Settings" },
-                {
-                    icon: "mdi-logout",
-                    text: "Log out",
-                    link: { name: "logout" }
-                }
-            ];
+            if (this.isAdmin)
+                return [
+                    {
+                        icon: "mdi-bank",
+                        text: "Bank Accounts",
+                        link: { name: "account-list" }
+                    },
+                    { divider: true },
+                    {
+                        icon: "mdi-account-group",
+                        text: "Merchants",
+                        link: { name: "team-list" }
+                    },
+                    { divider: true },
+                    {
+                        icon: "mdi-settings",
+                        text: "Settings",
+                        link: { name: "settings" }
+                    },
+                    {
+                        icon: "mdi-logout",
+                        text: "Log out",
+                        link: { name: "logout" }
+                    }
+                ];
 
             return [
                 {
@@ -96,7 +101,11 @@ export default {
                     link: { name: "account-list" }
                 },
                 { divider: true },
-                { icon: "mdi-settings", text: "Settings" },
+                {
+                    icon: "mdi-settings",
+                    text: "Settings",
+                    link: { name: "settings" }
+                },
                 {
                     icon: "mdi-logout",
                     text: "Log out",
