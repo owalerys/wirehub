@@ -210,6 +210,8 @@ export default {
                 }
 
                 const response = await api.put('/user/password', data)
+
+                this.clearPassword()
             } catch (e) {
                 if (e.response.status === 422 && e.response.data.errors) {
                     this.$refs.passwordObserver.setErrors(e.response.data.errors)
