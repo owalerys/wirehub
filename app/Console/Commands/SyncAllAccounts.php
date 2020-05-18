@@ -42,7 +42,7 @@ class SyncAllAccounts extends Command
         $items = Item::all();
 
         foreach ($items as $item) {
-            UpdateTransactions::dispatch($item->external_id);
+            UpdateTransactions::dispatch($item->external_id, 'DEFAULT_UPDATE');
         }
     }
 }

@@ -50,6 +50,7 @@ class NewTransaction extends Notification
         $amount = $this->transaction->amount;
         $mask = $this->transaction->account->mask;
         $description = $this->transaction->name;
+        $date = $this->transaction->date;
 
         return (new MailMessage)
                     ->subject('A new transaction arrived.')
@@ -58,6 +59,7 @@ class NewTransaction extends Notification
                     ->line("Amount: $amount")
                     ->line("Pending: $pending")
                     ->line("Description: $description")
+                    ->line("Date: $date")
                     ->action('View in Account', url(config('app.url') . "/app/accounts/$accountId"));
     }
 
