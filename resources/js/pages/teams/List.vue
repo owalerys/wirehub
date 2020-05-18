@@ -35,7 +35,7 @@ export default {
                     value: "name"
                 },
                 { text: "Owner", value: "users[0].name" },
-                { text: "Owner", value: "users[0].name" },
+                { text: "E-mail", value: "users[0].email" },
             ],
             loading: false
         };

@@ -12,7 +12,7 @@ class TeamController extends Controller
     {
         $this->authorize('viewAny', Team::class);
 
-        $teams = Team::all();
+        $teams = Team::with('users')->get();
 
         return response()->json($teams);
     }
