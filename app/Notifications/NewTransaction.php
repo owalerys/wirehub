@@ -49,6 +49,7 @@ class NewTransaction extends Notification
         $currency = $this->transaction->iso_currency_code;
         $amount = $this->transaction->amount;
         $mask = $this->transaction->account->mask;
+        $description = $this->transaction->name;
 
         return (new MailMessage)
                     ->subject('A new transaction arrived.')
@@ -56,6 +57,7 @@ class NewTransaction extends Notification
                     ->line("Currency: $currency")
                     ->line("Amount: $amount")
                     ->line("Pending: $pending")
+                    ->line("Description: $description")
                     ->action('View in Account', url(config('app.url') . "/app/accounts/$accountId"));
     }
 
