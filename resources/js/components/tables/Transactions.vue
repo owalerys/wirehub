@@ -57,7 +57,7 @@ export default {
 
             if (this.actions) {
                 headers.push({
-                    text: "Actions",
+                    text: "Credited To User?",
                     value: "actions",
                     sortable: false,
                     align: "end"
