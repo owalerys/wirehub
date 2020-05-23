@@ -55,7 +55,7 @@ export default {
                 product: ["auth", "transactions"],
                 onSuccess: this.onSuccess,
                 onExit: this.onExit,
-                webhook: "https://wirehub.cc/api/webhook/plaid"
+                webhook: process.env.MIX_PLAID_WEBHOOK_URL
             });
 
             this.publicToken = "";
