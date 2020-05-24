@@ -1,6 +1,8 @@
 <template>
     <v-card>
-        <v-card-title>Transactions<v-spacer /></v-card-title>
+        <v-card-title
+            >Transactions<v-spacer /><slot name="actions"></slot
+        ></v-card-title>
         <v-data-table
             :loading="loading"
             :headers="headers"
