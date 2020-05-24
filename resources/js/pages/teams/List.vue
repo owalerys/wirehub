@@ -6,6 +6,7 @@
                     >Merchants<v-spacer /><v-btn
                         color="primary"
                         :to="{ name: 'team-create' }"
+                        outlined
                         >Create</v-btn
                     ></v-card-title
                 >

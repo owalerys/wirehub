@@ -13,6 +13,7 @@
                         @click="openLink"
                         :disabled="!!linkHandler"
                         color="error"
+                        outlined
                         >Retry</v-btn
                     ></v-card-title
                 >

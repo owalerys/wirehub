@@ -65,9 +65,10 @@
                                 class="mr-4"
                                 @click="submit"
                                 :loading="loading"
+                                outlined
                                 >submit</v-btn
                             >
-                            <v-btn @click="clear" :disabled="loading"
+                            <v-btn @click="clear" :disabled="loading" outlined
                                 >clear</v-btn
                             >
                         </form>

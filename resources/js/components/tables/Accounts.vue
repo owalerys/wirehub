@@ -5,6 +5,7 @@
                 v-if="actions"
                 color="primary"
                 :to="{ name: 'account-create' }"
+                outlined
                 >Create</v-btn
             ></v-card-title
         >
