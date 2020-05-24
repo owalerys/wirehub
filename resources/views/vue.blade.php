@@ -17,6 +17,7 @@
 </head>
 <body>
     <div id="app"></div>
+    <a id="hiddenDownloadEl" style="visibility: hidden"></a>
 
     <script>
         window.user = @json(Auth::user()->load('roles.permissions'))
