@@ -43,6 +43,30 @@ class AccountController extends Controller
         return response()->json($transactions);
     }
 
+    public function getAccountTransactionsHistorical(string $accountId)
+    {
+        $account = Account::where('external_id', $accountId)->first();
+
+        $this->authorize('view', $account);
+
+        $output = [];
+
+        foreach($account->transactions()->orderBy('date', 'desc')->cursor() as $transaction) {
+            array_push($output, [
+                'ID' => $transaction->id,
+                'Date' => $transaction->date,
+                'Name' => $transaction->name,
+                'Amount' => $transaction->amount,
+                'Pending' => $transaction->pending ? 'Pending' : '',
+                'Currency' => $transaction->iso_currency_code,
+                'Credited To User' => $transaction->confirmed ? 'Credited' : '',
+                'Credited Changed At' => $transaction->confirmed_at ?: ''
+            ]);
+        }
+
+        return response()->json($output);
+    }
+
     public function putTeamLink(string $accountId, Request $request)
     {
         $this->validate($request, [
