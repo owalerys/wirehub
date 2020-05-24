@@ -19,7 +19,8 @@
                 :transactions="transactions"
                 @confirmed="updateTransactionConfirmation"
                 :actions="isTeamMember"
-            />
+                ><template v-slot:actions><Download :url="`/accounts/${accountId}/transactions/historical`" /></template
+            ></TransactionsTable>
         </v-col>
         <v-dialog v-model="merchantDialog" scrollable max-width="300px">
             <v-card>
@@ -63,12 +64,14 @@ import api from "../../api";
 import Vue from "vue";
 
 import AccountCard from "../../components/cards/Account";
+import Download from '../../components/Download';
 import TeamCard from "../../components/cards/Team";
 import TransactionsTable from "../../components/tables/Transactions";
 
 export default {
     components: {
         AccountCard,
+        Download,
         TeamCard,
         TransactionsTable
     },
@@ -88,7 +91,7 @@ export default {
         ...mapState("team", {
             teams: "teams"
         }),
-        ...mapGetters('user', ['isTeamMember', 'isAdmin']),
+        ...mapGetters("user", ["isTeamMember", "isAdmin"]),
         team() {
             return this.account &&
                 this.account.teams &&
