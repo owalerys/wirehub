@@ -9,6 +9,8 @@ import App from './App.vue'
 
 import './filters'
 
+require('typeface-roboto')
+
 const unsync = sync(store, router)
 
 new Vue({
