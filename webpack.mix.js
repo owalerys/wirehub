@@ -22,4 +22,6 @@ mix.copy('resources/img', 'public/dist/img');
 
 mix.disableSuccessNotifications();
 
-mix.version();
+if (mix.inProduction()) {
+    mix.version();
+}
