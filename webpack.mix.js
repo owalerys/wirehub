@@ -16,4 +16,8 @@ require('vuetifyjs-mix-extension');
 mix.js('resources/js/app.js', 'public/dist/js').vuetify('vuetify-loader');
 mix.sass('resources/sass/app.scss', 'public/dist/css');
 
+mix.copy('resources/img', 'public/dist/img');
+
 mix.disableSuccessNotifications();
+
+mix.version();
