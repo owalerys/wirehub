@@ -10,6 +10,7 @@ import App from './App.vue'
 import './filters'
 
 require('typeface-roboto')
+require('typeface-open-sans')
 
 const unsync = sync(store, router)
 
