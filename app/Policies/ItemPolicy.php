@@ -19,7 +19,7 @@ class ItemPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $this->userIsAdmin($user);
     }
 
     /**
@@ -31,7 +31,7 @@ class ItemPolicy
      */
     public function view(User $user, Item $item)
     {
-        //
+        return $this->userIsAdmin($user);
     }
 
     /**
@@ -66,7 +66,7 @@ class ItemPolicy
      */
     public function delete(User $user, Item $item)
     {
-        //
+        return $this->userIsAdmin($user);
     }
 
     /**
