@@ -243,4 +243,15 @@ class Plaid
 
         return;
     }
+
+    public function removeItem(Item $item)
+    {
+        $response = $this->client->post('/item/remove', $this->withAuthentication([
+            'access_token' => $item->access_token
+        ]));
+
+        if (!$response->ok()) {
+            throw new \Exception($response);
+        }
+    }
 }
