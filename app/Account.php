@@ -22,7 +22,7 @@ class Account extends Model
 
     public function teams()
     {
-        return $this->belongsToMany(Team::class);
+        return $this->belongsToMany(Team::class)->withTimestamps()->wherePivot('deleted_at', null);
     }
 
     public function transactions()
