@@ -13,11 +13,15 @@ class AccountController extends Controller
         $this->authorize('viewAny', Account::class);
 
         if (Auth::user()->hasRole(['admin', 'super-admin'])) {
-            $accounts = Account::with('item')->get();
+            $accounts = Account::with('item')->where('type', 'depository')->get();
         } else {
             $user = Auth::user()->load('team.accounts.item');
 
             $accounts = $user->team->accounts;
+
+            $accounts = $accounts->filter(function ($account, $key) {
+                return $account->type === 'depository';
+            })->values();
         }
 
         return response()->json($accounts);
