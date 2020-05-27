@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/item/exchange', 'PlaidController@exchangeToken');
+    Route::post('/items/exchange', 'PlaidController@exchangeToken');
+
+    Route::get('/items/{itemId}', 'ItemController@get');
+    Route::delete('/items/{itemId}', 'ItemController@delete');
 
     Route::get('/accounts', 'AccountController@getAccounts');
     Route::get('/accounts/{accountId}', 'AccountController@getAccount');

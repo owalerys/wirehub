@@ -7,7 +7,7 @@ export default {
     },
     actions: {
         async exchangeToken(context, { publicToken }) {
-            const response = await api.post('/item/exchange', { public_token: publicToken })
+            const response = await api.post('/items/exchange', { public_token: publicToken })
 
             console.log(response)
         }
