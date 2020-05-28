@@ -19,9 +19,60 @@
                 :transactions="transactions"
                 @confirmed="updateTransactionConfirmation"
                 :actions="isTeamMember"
-                ><template v-slot:actions><Download :url="`/accounts/${accountId}/transactions/historical`" /></template
+                ><template v-slot:actions
+                    ><Download
+                        :url="
+                            `/accounts/${accountId}/transactions/historical`
+                        "/></template
             ></TransactionsTable>
         </v-col>
+        <v-col v-if="isAdmin" cols="12">
+            <v-card>
+                <v-card-title
+                    >Settings <v-spacer />
+                    <v-btn color="red" outlined :loading="deleteLoading" @click="preDeleteModal">Delete Account</v-btn></v-card-title
+                >
+            </v-card>
+        </v-col>
+        <v-dialog v-model="deleteDialog" max-width="500px">
+            <v-card v-if="itemWithAccounts">
+                <v-card-title>Delete Accounts at {{ itemWithAccounts.institution.name }}</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <br/>
+                    <v-alert type="error">
+                        All accounts at {{ itemWithAccounts.institution.name }} connected under the same login will also be deleted.
+                    </v-alert>
+                    <v-list two-line>
+                        <v-list-item v-for="account in itemWithAccounts.accounts" :key="account.external_id">
+                            <v-list-item-content>
+                                <v-list-item-title>Account ***{{ account.mask }}: {{ account.name }}</v-list-item-title>
+                                <v-list-item-subtitle v-if="account.teams[0]">Linked to Merchant: {{ account.teams[0].name }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-else>Not shared with Merchant</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="deleteDialog = false"
+                        :disabled="deleteLoading"
+                        >Cancel</v-btn
+                    >
+                    <v-spacer />
+                    <v-btn
+                        color="red"
+                        text
+                        @click="deleteItem"
+                        :loading="deleteLoading"
+                        >Delete</v-btn
+                    >
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-dialog v-model="merchantDialog" scrollable max-width="300px">
             <v-card>
                 <v-card-title>Change Merchant</v-card-title>
@@ -64,7 +115,7 @@ import api from "../../api";
 import Vue from "vue";
 
 import AccountCard from "../../components/cards/Account";
-import Download from '../../components/Download';
+import Download from "../../components/Download";
 import TeamCard from "../../components/cards/Team";
 import TransactionsTable from "../../components/tables/Transactions";
 
@@ -81,7 +132,10 @@ export default {
             transactions: [],
             account: {},
             merchantDialog: false,
-            selectedMerchant: null
+            selectedMerchant: null,
+            deleteLoading: false,
+            itemWithAccounts: null,
+            deleteDialog: false
         };
     },
     computed: {
@@ -147,6 +201,38 @@ export default {
                 console.error(e);
             } finally {
                 this.loading = false;
+            }
+        },
+        async preDeleteModal() {
+            this.deleteLoading = true;
+
+            try {
+                const response = await api.get(`/items/${this.account.item_id}`)
+
+                this.itemWithAccounts = response.data
+
+                this.deleteDialog = true
+            } catch (e) {
+                console.error(e)
+            } finally {
+                this.deleteLoading = false
+            }
+        },
+        async deleteItem() {
+            this.deleteLoading = true;
+
+            try {
+                const response = await api.delete(`/items/${this.account.item_id}`)
+
+                this.deleteDialog = false
+
+                this.$router.push({
+                    name: 'account-list'
+                })
+            } catch (e) {
+                console.error(e)
+            } finally {
+                this.deleteLoading = false
             }
         },
         updateTransactionConfirmation({ externalId, confirmed }) {
