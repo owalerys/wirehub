@@ -2,38 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Team as ResourcesTeam;
 use App\Services\Team as ServicesTeam;
 use App\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TeamController extends Controller
 {
     public function getTeams()
     {
-        $this->authorize('viewAny', Team::class);
+        Gate::authorize('view-any-teams');
 
         $teams = Team::with('users')->get();
 
-        return response()->json($teams);
+        return response()->json(ResourcesTeam::collection($teams->values()));
     }
 
     public function getTeam(int $teamId)
     {
-        $team = Team::where('id', $teamId)->with(['accounts' => function ($query) {
-            $query->where('type', 'depository');
-            $query->with('item');
-        }])->with(['users.roles'])->first();
+        $team = Team::find($teamId);
 
-        if (!$team) return response('', 404);
+        if (!$team) return abort(404);
 
-        $this->authorize('view', $team);
+        Gate::authorize('view-team', $team);
 
-        return response()->json($team);
+        $team->getAllAccounts();
+
+        $team->load('users');
+
+        return response()->json(new ResourcesTeam($team));
     }
 
     public function createTeam(Request $request, ServicesTeam $service)
     {
-        $this->authorize('create', Team::class);
+        Gate::authorize('create-team');
 
         $this->validate($request, [
             'organization' => 'required|string',

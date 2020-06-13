@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Contracts\Transaction as ContractsTransaction;
 use App\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +20,7 @@ class NewTransaction extends Notification
      *
      * @return void
      */
-    public function __construct(Transaction $transaction)
+    public function __construct(ContractsTransaction $transaction)
     {
         $this->transaction = $transaction;
     }
@@ -43,24 +44,31 @@ class NewTransaction extends Notification
      */
     public function toMail($notifiable)
     {
-        $accountId = $this->transaction->account_id;
+        $pending = $this->transaction->getPending();
+        $currency = $this->transaction->getCurrencyCode();
+        $amount = $this->transaction->getAmount();
+        $mask = $this->transaction->account->getMask();
+        $description = $this->transaction->getName();
+        $date = $this->transaction->getDate();
 
-        $pending = $this->transaction->pending ? 'YES' : 'NO';
-        $currency = $this->transaction->iso_currency_code;
-        $amount = $this->transaction->amount;
-        $mask = $this->transaction->account->mask;
-        $description = $this->transaction->name;
-        $date = $this->transaction->date;
+        $parentResourceIdentifier = $this->transaction->getParentResourceIdentifier();
 
-        return (new MailMessage)
-                    ->subject('A new transaction arrived.')
-                    ->line("Account: ***$mask")
-                    ->line("Currency: $currency")
-                    ->line("Amount: $amount")
-                    ->line("Pending: $pending")
-                    ->line("Description: $description")
-                    ->line("Date: $date")
-                    ->action('View in Account', url(config('app.url') . "/app/accounts/$accountId"));
+        $message = new MailMessage;
+
+        $message->subject('A new transaction arrived.');
+
+        $message->line("Account: ***$mask");
+        $message->line("Currency: $currency");
+        $message->line("Amount: $amount");
+
+        if ($pending !== null) $message->line("Pending: " . $pending ? 'YES' : 'NO');
+
+        $message->line("Description: $description");
+        $message->line("Date: $date");
+
+        $message->action('View in Account', url(config('app.url') . "/app/accounts/$parentResourceIdentifier"));
+
+        return $message;
     }
 
     /**

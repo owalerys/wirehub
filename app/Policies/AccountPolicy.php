@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Account;
+use App\Contracts\Account as ContractsAccount;
 use App\Policies\Traits\UserHelper;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -19,79 +19,36 @@ class AccountPolicy
      */
     public function viewAny(User $user)
     {
-        return $this->userIsAdmin($user) || ($user->team_id !== null && $this->userIsTeamMember($user));
+        return $this->userIsAdmin($user);
+    }
+
+    public function viewOwn(User $user)
+    {
+        return $user->team_id !== null && $this->userIsTeamMember($user);
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Account  $account
      * @return mixed
      */
-    public function view(User $user, Account $account)
+    public function view(User $user, ContractsAccount $account)
     {
         return $this->userIsAdmin($user)
             || ($this->userIsTeamMember($user)
-                && in_array($user->team_id, $account->teams->pluck('id')->all()));
-    }
-
-    /**
-     * Determine whether the user can create models.
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
-    public function create(User $user)
-    {
-        //
+                && in_array($account->getResourceIdentifier(), $user->team->accountResourceIdentifiers()));
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Account  $account
+     * @param  ContractsAccount  $account
      * @return mixed
      */
-    public function update(User $user, Account $account)
+    public function update(User $user)
     {
         return $this->userIsAdmin($user);
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Account  $account
-     * @return mixed
-     */
-    public function delete(User $user, Account $account)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Account  $account
-     * @return mixed
-     */
-    public function restore(User $user, Account $account)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Account  $account
-     * @return mixed
-     */
-    public function forceDelete(User $user, Account $account)
-    {
-        //
     }
 }

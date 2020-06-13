@@ -15,6 +15,9 @@
             <template v-slot:item.confirmed="slotProps">
                 {{ slotProps.item.confirmed ? "Yes" : "No" }}
             </template>
+            <template v-slot:item.currency_code="slotProps">
+                {{ slotProps.item.currency_code ? slotProps.item.currency_code : account.currency_code }}
+            </template>
             <template v-slot:item.actions="slotProps">
                 <Confirmation
                     :transaction="slotProps.item"
@@ -37,14 +40,14 @@ export default {
     components: {
         Confirmation
     },
-    props: ["loading", "transactions", "actions"],
+    props: ["loading", "transactions", "actions", "account"],
     computed: {
         headers() {
             const headers = [
                 {
                     text: "ID",
                     align: "start",
-                    value: "id"
+                    value: "internal_id"
                 },
                 {
                     text: "Date",
@@ -53,7 +56,7 @@ export default {
                 },
                 { text: "Name", value: "name" },
                 { text: "Amount", value: "amount", align: "end" },
-                { text: "Currency", value: "iso_currency_code", align: "end" },
+                { text: "Currency", value: "currency_code", align: "end" },
                 { text: "Confirmed", value: "confirmed", align: "end" }
             ];
 

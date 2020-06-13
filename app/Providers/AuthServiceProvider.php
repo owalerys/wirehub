@@ -20,12 +20,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [
-        Account::class => AccountPolicy::class,
-        Item::class => ItemPolicy::class,
-        Team::class => TeamPolicy::class,
-        Transaction::class => TransactionPolicy::class
-    ];
+    protected $policies = [];
 
     /**
      * Register any authentication / authorization services.
@@ -36,6 +31,19 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('view-any-accounts', AccountPolicy::class . '@viewAny');
+        Gate::define('view-own-accounts', AccountPolicy::class . '@viewOwn');
+        Gate::define('view-account', AccountPolicy::class . '@view');
+        Gate::define('update-account', AccountPolicy::class . '@update');
+
+        Gate::define('view-item', ItemPolicy::class . '@view');
+        Gate::define('create-item', ItemPolicy::class . '@create');
+        Gate::define('delete-item', ItemPolicy::class . '@delete');
+
+        Gate::define('view-team', TeamPolicy::class . '@view');
+        Gate::define('view-any-teams', TeamPolicy::class . '@viewAny');
+        Gate::define('create-team', TeamPolicy::class . '@create');
+
+        Gate::define('confirm-transaction', TransactionPolicy::class . '@confirm');
     }
 }

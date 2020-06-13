@@ -2,28 +2,30 @@
 
 namespace App\Jobs;
 
+use App\Contracts\Transaction as ContractsTransaction;
 use App\Notifications\NewTransaction;
-use App\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Database\Eloquent\Model;
 
 class QueueTransactionNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $transactionId;
+    /** @property ContractsTransaction|Model $transaction */
+    protected $transaction;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $transactionId)
+    public function __construct(ContractsTransaction $transaction)
     {
-        $this->transactionId = $transactionId;
+        $this->transaction = $transaction;
     }
 
     /**
@@ -34,13 +36,19 @@ class QueueTransactionNotification implements ShouldQueue
     public function handle()
     {
         // Get notifiable user
-        $transaction = Transaction::where('external_id', $this->transactionId)->has('account.teams.users')->with('account.teams.users')->first();
+        $this->transaction->load('account.teams.users');
 
-        // Filter out accounts with no team and amounts above 0 (outgoing)
-        if ($transaction === null || $transaction->amount > 0) return;
+        /** @var App\Contracts\Account $account */
+        $account = $this->transaction->account;
+        if (!$account->isDepository()) return;
 
-        $toNotify = $transaction->account->teams->first()->users->first();
+        // No team associated
+        if ($account->teams->count() === 0) return;
 
-        $toNotify->notify(new NewTransaction($transaction));
+        if ($account->teams->first()->users->count === 0) return;
+
+        $toNotify = $this->transaction->account->teams->first()->users->first();
+
+        $toNotify->notify(new NewTransaction($this->transaction));
     }
 }

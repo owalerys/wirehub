@@ -1,26 +1,33 @@
 <template>
     <v-row justify="center" align="start">
+        <FlinksConnect v-if="provider === 'flinks' && flinks.show" v-model="flinks.visible" @error="onFlinksError" @success="onFlinksSuccess" />
+        <PlaidConnect v-if="provider === 'plaid' && plaid.show" @error="onPlaidExit" @success="onPlaidSuccess" />
         <v-col>
             <v-card
                 outline
-                :loading="!!linkHandler"
+                :loading="loading"
                 max-width="500"
                 class="mx-auto"
             >
                 <v-card-title
                     >Link Account<v-spacer /><v-btn
-                        v-if="!linked && !linkHandler"
-                        @click="openLink"
-                        :disabled="!!linkHandler"
+                        v-if="error"
+                        @click="tryAgain"
+                        :disabled="loading"
                         color="error"
                         outlined
                         >Retry</v-btn
                     ></v-card-title
                 >
                 <v-card-text
-                    ><p>
+                    ><p v-if="loading">
                         We're linking your account... Hold tight.
-                    </p></v-card-text
+                    </p><div v-else>
+                        <v-btn outlined @click="tryFlinks">Connect Canadian Account</v-btn>
+                        <br/>
+                        <br/>
+                        <v-btn outlined @click="tryPlaid">Connect Other Account</v-btn>
+                        </div></v-card-text
                 >
             </v-card>
         </v-col>
@@ -30,69 +37,104 @@
 <script>
 import { mapActions } from "vuex";
 
+import FlinksConnect from '../../components/connect/Flinks'
+import PlaidConnect from '../../components/connect/Plaid'
+
 export default {
     data() {
         return {
-            linkHandler: null,
-            publicToken: "",
-            metadata: {},
-            error: {},
-            item: {}
+            error: false,
+            provider: 'flinks',
+            plaid: {
+                show: false,
+                error: {},
+                metadata: {},
+                item: {},
+                publicToken: ""
+            },
+            flinks: {
+                show: false,
+                visible: false,
+                link: null
+            }
         };
     },
+    components: {
+        FlinksConnect,
+        PlaidConnect
+    },
     computed: {
-        linked() {
-            return !!this.publicToken;
-        }
+        loading() {
+            return this.plaid.show || this.flinks.show;
+        },
     },
     methods: {
-        ...mapActions("link", ["exchangeToken"]),
-        initializeLink() {
-            this.linkHandler = Plaid.create({
-                clientName: "WireHub",
-                env: process.env.MIX_PLAID_ENV,
-                apiVersion: "v2",
-                key: process.env.MIX_PLAID_PUBLIC_KEY,
-                product: ["auth", "transactions"],
-                onSuccess: this.onSuccess,
-                onExit: this.onExit,
-                webhook: process.env.MIX_PLAID_WEBHOOK_URL
-            });
+        ...mapActions("link", ["exchangeToken", "saveLogin"]),
+        async onPlaidSuccess({ publicToken, metadata }) {
+            this.plaid.publicToken = publicToken;
+            this.plaid.metadata = metadata;
 
-            this.publicToken = "";
-            this.metadata = {};
-            this.error = {};
+            try {
+                await this.exchangeToken({ publicToken });
+            } catch (e) {
+                this.error = true
+                console.error(e)
+            } finally {
+                this.plaid.show = false;
+            }
+
+            if (!this.error) this.$router.push({ name: "account-list" });
         },
-        openLink() {
-            if (!this.linkHandler) this.initializeLink();
+        onPlaidExit({ error, metadata }) {
+            this.plaid.error = error;
+            this.plaid.metadata = metadata;
 
-            this.linkHandler.open();
+            this.plaid.show = false;
+            this.error = true;
         },
-        destroyLink() {
-            this.$nextTick(vm => {
-                this.linkHandler.destroy();
-                this.linkHandler = null;
-            });
+        tryPlaid() {
+            this.provider = 'plaid'
+
+            this.tryAgain()
         },
-        async onSuccess(publicToken, metadata) {
-            this.publicToken = publicToken;
-            this.metadata = metadata;
+        tryFlinks() {
+            this.provider = 'flinks'
 
-            await this.exchangeToken({ publicToken });
-
-            this.destroyLink();
-
-            this.$router.push({ name: "account-list" });
+            this.tryAgain()
         },
-        onExit(error, metadata) {
-            this.error = error;
-            this.metadata = metadata;
+        tryAgain() {
+            this.error = false
 
-            this.destroyLink();
-        }
+            this.flinks.show = false
+            this.plaid.show = false
+
+            if (this.provider === 'plaid') this.plaid.show = true
+            else if (this.provider === 'flinks') {
+                this.flinks.show = true
+                this.flinks.visible = true
+            }
+        },
+        async onFlinksSuccess({ loginId, institution }) {
+            this.flinks.loginId = loginId;
+            this.flinks.institution = institution;
+
+            try {
+                await this.saveLogin({ loginId, institution });
+            } catch (e) {
+                this.error = true
+                console.error(e)
+            } finally {
+                this.flinks.show = false;
+            }
+
+            if (!this.error) this.$router.push({ name: "account-list" });
+        },
+        onFlinksError() {
+            console.log('flinks error')
+            this.flinks.show = false
+
+            this.error = true
+        },
     },
-    mounted() {
-        this.openLink();
-    }
 };
 </script>

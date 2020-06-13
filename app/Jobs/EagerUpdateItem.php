@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Item;
-use App\Services\Plaid;
+use App\Contracts\Item as ContractsItem;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,16 +13,17 @@ class EagerUpdateItem implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $itemId;
+    /** @property App\Contracts\Item $item */
+    protected $item;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $itemId)
+    public function __construct(ContractsItem $item)
     {
-        $this->itemId = $itemId;
+        $this->item = $item;
     }
 
     /**
@@ -31,10 +31,8 @@ class EagerUpdateItem implements ShouldQueue
      *
      * @return void
      */
-    public function handle(Plaid $service)
+    public function handle()
     {
-        $item = Item::where('external_id', $this->itemId)->first();
-
-        $service->forceRefreshTransactions($item);
+        $this->item->eagerRefresh();
     }
 }

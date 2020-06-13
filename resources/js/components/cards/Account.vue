@@ -5,7 +5,7 @@
             ><v-avatar>
                 <img
                     :src="
-                        `data:image/png;base64, ${account.item.institution.logo}`
+                        account.item.institution_meta ? `data:image/png;base64, ${account.item.institution_meta.logo}` : logos[account.item.institution]
                     "
                 />
             </v-avatar>
@@ -14,23 +14,29 @@
         <v-card-text v-if="!loading">
             <b>Name:</b> {{ account.name }}
             <br />
-            <b>Official Name:</b> {{ account.official_name }}<br />
             <b>Last 4:</b> ***{{ account.mask }}<br />
-            <b>Institution:</b> {{ account.item.institution.name }}
+            <b>Institution:</b> {{ account.item.institution }}
             <br />
-            <b>Currency:</b> {{ account.balances.iso_currency_code }}
+            <b>Currency:</b> {{ account.currency_code }}
             <br />
             <b>Current Balance:</b>
             {{ account.balances.current | money }}
             <br />
-            <b>Available Balance:</b>
-            {{ account.balances.available | money }}
+            <b v-if="account.balances.available">Available Balance:</b>
+            {{ account.balances.available ? (account.balances.available | money) : '' }}
         </v-card-text>
     </v-card>
 </template>
 
 <script>
+import logos from '../../logo'
+
 export default {
-    props: ['account', 'loading']
+    props: ['account', 'loading'],
+    computed: {
+        logos() {
+            return logos
+        }
+    }
 }
 </script>

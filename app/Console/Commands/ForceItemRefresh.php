@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Item;
+use App\Plaid\Item;
 use App\Jobs\EagerUpdateItem;
+use App\Services\Discovery;
 use Illuminate\Console\Command;
 
 class ForceItemRefresh extends Command
@@ -37,13 +38,13 @@ class ForceItemRefresh extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Discovery $service)
     {
-        $items = Item::has('accounts.teams')->with('accounts.teams')->get();
+        $items = $service->getAllItemsForRefresh();
 
         foreach ($items as $item) {
-            $this->info('Updating ' . $item->external_id);
-            EagerUpdateItem::dispatch($item->external_id);
+            $this->info('Updating ' . $item->getResourceIdentifier());
+            EagerUpdateItem::dispatch($item);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\RemoveTransactions;
 use App\Jobs\UpdateItem;
 use App\Jobs\UpdateTransactions;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use App\Plaid\Item;
 use Illuminate\Http\Request;
 
 class WebhookController extends Controller
@@ -40,7 +40,13 @@ class WebhookController extends Controller
             'new_transactions' => 'required|integer'
         ]);
 
-        UpdateTransactions::dispatch($request->input('item_id'), $request->input('webhook_code'));
+        $item = Item::where('external_id', $request->input('item_id'))->first();
+
+        $fullHistory = $request->input('webhook_code') === 'HISTORICAL_UPDATE';
+
+        UpdateTransactions::withChain(
+            new UpdateItem($item)
+        )->dispatch($item, $fullHistory);
 
         return response()->json(['message' => 'Transaction update acknowledged.']);
     }
@@ -54,7 +60,11 @@ class WebhookController extends Controller
             'removed_transactions.*' => 'required|string|exists:transactions,external_id'
         ]);
 
-        RemoveTransactions::dispatch($request->input('removed_transactions'));
+        $item = Item::where('external_id', $request->input('item_id'));
+
+        RemoveTransactions::withChain([
+            new UpdateItem($item)
+        ])->dispatch($request->input('removed_transactions'));
 
         return response()->json(['message' => 'Transaction removal acknowledged.']);
     }
@@ -67,7 +77,9 @@ class WebhookController extends Controller
             'new_webhook_url' => 'required|string|url'
         ]);
 
-        UpdateItem::dispatch($request->input('item_id'));
+        $item = Item::where('external_id', $request->input('item_id'));
+
+        UpdateItem::dispatch($item);
 
         return response()->json(['message' => 'Item webhook update acknowledged.']);
     }
@@ -80,7 +92,9 @@ class WebhookController extends Controller
             'consent_expiration_time' => 'required|string|date_format:c'
         ]);
 
-        UpdateItem::dispatch($request->input('item_id'));
+        $item = Item::where('external_id', $request->input('item_id'));
+
+        UpdateItem::dispatch($item);
 
         return response()->json(['message' => 'Item pending expiration acknowledged.']);
     }
@@ -97,7 +111,9 @@ class WebhookController extends Controller
             'error.status' => 'required|integer'
         ]);
 
-        UpdateItem::dispatch($request->input('item_id'));
+        $item = Item::where('external_id', $request->input('item_id'));
+
+        UpdateItem::dispatch($item);
 
         return response()->json(['message' => 'Item error acknowledged.']);
     }

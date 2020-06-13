@@ -19,6 +19,7 @@
                 :transactions="transactions"
                 @confirmed="updateTransactionConfirmation"
                 :actions="isTeamMember"
+                :account="account"
                 ><template v-slot:actions
                     ><Download
                         :url="
@@ -41,10 +42,10 @@
                 <v-card-text>
                     <br/>
                     <v-alert type="error">
-                        All accounts at {{ itemWithAccounts.institution.name }} connected under the same login will also be deleted.
+                        All accounts at {{ itemWithAccounts.institution }} connected under the same login will also be deleted.
                     </v-alert>
                     <v-list two-line>
-                        <v-list-item v-for="account in itemWithAccounts.accounts" :key="account.external_id">
+                        <v-list-item v-for="account in filteredItemAccounts" :key="account.id">
                             <v-list-item-content>
                                 <v-list-item-title>Account ***{{ account.mask }}: {{ account.name }}</v-list-item-title>
                                 <v-list-item-subtitle v-if="account.teams[0]">Linked to Merchant: {{ account.teams[0].name }}</v-list-item-subtitle>
@@ -155,6 +156,9 @@ export default {
         },
         manager() {
             return this.team ? this.team.users[0] : null;
+        },
+        filteredItemAccounts() {
+            if (this.itemWithAccounts) return this.itemWithAccounts.accounts.filter(account => account.is_depository)
         }
     },
     methods: {
@@ -207,7 +211,7 @@ export default {
             this.deleteLoading = true;
 
             try {
-                const response = await api.get(`/items/${this.account.item_id}`)
+                const response = await api.get(`/items/${this.account.parent_id}`)
 
                 this.itemWithAccounts = response.data
 
@@ -222,7 +226,7 @@ export default {
             this.deleteLoading = true;
 
             try {
-                const response = await api.delete(`/items/${this.account.item_id}`)
+                const response = await api.delete(`/items/${this.account.parent_id}`)
 
                 this.deleteDialog = false
 

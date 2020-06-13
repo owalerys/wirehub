@@ -2,54 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Account as ResourcesAccount;
+use App\Http\Resources\Item as ResourcesItem;
 use App\Item;
+use App\Services\Discovery;
 use App\Services\Plaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class ItemController extends Controller
 {
-    public function get(string $itemId)
+    public function get(string $itemId, Discovery $service)
     {
-        $item = Item::where('external_id', $itemId)->with(['accounts' => function ($query) {
-            $query->where('type', 'depository');
-            $query->with('teams');
-        }])->first();
+        $item = $service->identifyItem($itemId);
 
-        if (!$item) {
-            return response('', 404);
-        }
+        if (!$item) abort(404);
 
-        $this->authorize('view', $item);
+        Gate::authorize('view-item', $item);
 
-        return response()->json($item);
+        $item->load('accounts.teams');
+
+        return response()->json(new ResourcesItem($item));
     }
 
-    public function delete(string $itemId, Plaid $service)
+    public function delete(string $itemId, Discovery $service)
     {
-        $item = Item::where('external_id', $itemId)->with('accounts.teams')->first();
+        $item = $service->identifyItem($itemId);
 
         if (!$item) {
-            return response('', 404);
+            abort(404);
         }
 
-        $this->authorize('delete', $item);
+        Gate::authorize('delete-item', $item);
+
+        $item->load('accounts.teams');
 
         try {
             DB::beginTransaction();
 
             foreach ($item->accounts as $account) {
-                foreach ($account->teams as $team) {
-                    $team->pivot->deleted_at = now();
-                    $team->save();
-                }
+                $account->teams()->sync([]);
 
                 $account->delete();
             }
 
             $item->delete();
 
-            $service->removeItem($item);
+            $item->disconnect();
 
             DB::commit();
         } catch (\Exception $e) {

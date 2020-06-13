@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Item;
+use App\Jobs\UpdateItem;
 use App\Jobs\UpdateTransactions;
+use App\Services\Discovery;
 use Illuminate\Console\Command;
 
 class SyncAllAccounts extends Command
@@ -37,12 +38,15 @@ class SyncAllAccounts extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Discovery $service)
     {
-        $items = Item::all();
+        $items = $service->getAllItems();
 
         foreach ($items as $item) {
-            UpdateTransactions::dispatch($item->external_id, 'DEFAULT_UPDATE');
+            $this->info('Syncing: ' . $item->getResourceIdentifier());
+            UpdateItem::withChain([
+                new UpdateTransactions($item, true)
+            ])->dispatch($item);
         }
     }
 }

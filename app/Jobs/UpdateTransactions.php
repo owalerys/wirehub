@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Item;
-use App\Services\Plaid;
+use App\Contracts\Item as ContractsItem;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,18 +13,20 @@ class UpdateTransactions implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $itemId;
-    protected $type;
+    /** @property ContractsItem $item */
+    protected $item;
+    /** @property bool $fullHistory */
+    protected $fullHistory;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $itemId, string $type)
+    public function __construct(ContractsItem $item, bool $fullHistory = false)
     {
-        $this->itemId = $itemId;
-        $this->type = $type;
+        $this->item = $item;
+        $this->fullHistory = $fullHistory;
     }
 
     /**
@@ -33,27 +34,10 @@ class UpdateTransactions implements ShouldQueue
      *
      * @return void
      */
-    public function handle(Plaid $service)
+    public function handle()
     {
-        $rangeMap = [
-            'INITIAL_UPDATE' => 'month',
-            'HISTORICAL_UPDATE' => 'year',
-            'DEFAULT_UPDATE' => 'week'
-        ];
-
         try {
-            $item = Item::where('external_id', $this->itemId)->first();
-
-            if (!$item) {
-                $this->delete();
-            }
-
-            try {
-                $service->getTransactions($item, $rangeMap[$this->type], $this->type === 'DEFAULT_UPDATE');
-            } catch (\Exception $e) {
-                $this->fail($e);
-                return;
-            }
+            $this->item->detailRefresh($this->fullHistory);
 
             $this->delete();
         } catch (\Exception $e) {
