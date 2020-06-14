@@ -32,7 +32,6 @@ export default {
     },
     methods: {
         windowEvent(e) {
-            console.log("window event", e.data);
             const data = e.data;
             const step = data.step || "";
             if (step === "REDIRECT") {

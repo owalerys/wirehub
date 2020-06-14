@@ -10,16 +10,12 @@ export default {
             const response = await api.post("/items/plaid", {
                 public_token: publicToken
             });
-
-            console.log(response);
         },
         async saveLogin(context, { institution, loginId }) {
             const response = await api.post("/items/flinks", {
                 login_id: loginId,
                 institution: institution
             });
-
-            console.log(response);
         }
     }
 };

@@ -130,7 +130,6 @@ export default {
             if (!this.error) this.$router.push({ name: "account-list" });
         },
         onFlinksError() {
-            console.log('flinks error')
             this.flinks.show = false
 
             this.error = true
