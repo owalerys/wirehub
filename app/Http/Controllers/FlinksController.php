@@ -21,9 +21,10 @@ class FlinksController extends Controller
         ]);
 
         /** @var Item|null $item */
-        $item = Item::withTrashed()->where('login_id', $request->input('login_id'))->restore();
+        $item = Item::withTrashed()->where('login_id', $request->input('login_id'))->first();
 
         if ($item !== null) {
+            $item->restore();
             $item->accounts()->restore();
             $item->accounts()->transactions()->restore();
         }
