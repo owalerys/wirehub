@@ -65,7 +65,7 @@ export default {
     },
     computed: {
         loading() {
-            return this.plaid.show || this.flinks.show;
+            return this.plaid.show || (this.flinks.show && this.flinks.visible);
         },
     },
     methods: {
