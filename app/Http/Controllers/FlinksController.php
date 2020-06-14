@@ -20,17 +20,9 @@ class FlinksController extends Controller
             'institution' => 'required|string'
         ]);
 
-        /** @var Item|null $item */
-        $item = Item::withTrashed()->where('login_id', $request->input('login_id'))->first();
-
-        if ($item !== null) {
-            $item->restore();
-            $item->accounts()->restore();
-            $item->accounts()->transactions()->restore();
-        }
-
-        $item = Item::create([
-            'login_id' => $request->input('login_id'),
+        $item = Item::updateOrCreate([
+            'login_id' => $request->input('login_id')
+        ],[
             'institution' => $request->input('institution')
         ]);
 
