@@ -36,7 +36,7 @@ class WebhookController extends Controller
     {
         $this->validate($request, [
             'webhook_code' => 'in:INITIAL_UPDATE,HISTORICAL_UPDATE,DEFAULT_UPDATE',
-            'item_id' => 'required|string|exists:items,external_id',
+            'item_id' => 'required|string|exists:plaid_items,external_id',
             'new_transactions' => 'required|integer'
         ]);
 
@@ -55,9 +55,9 @@ class WebhookController extends Controller
     {
         $this->validate($request, [
             'webhook_code' => 'in:TRANSACTIONS_REMOVED',
-            'item_id' => 'required|string|exists:items,external_id',
+            'item_id' => 'required|string|exists:plaid_items,external_id',
             'removed_transactions' => 'required|array',
-            'removed_transactions.*' => 'required|string|exists:transactions,external_id'
+            'removed_transactions.*' => 'required|string|exists:plaid_transactions,external_id'
         ]);
 
         $item = Item::where('external_id', $request->input('item_id'));
@@ -73,7 +73,7 @@ class WebhookController extends Controller
     {
         $this->validate($request, [
             'webhook_code' => 'in:WEBHOOK_UPDATE_ACKNOWLEDGED',
-            'item_id' => 'required|string|exists:items,external_id',
+            'item_id' => 'required|string|exists:plaid_items,external_id',
             'new_webhook_url' => 'required|string|url'
         ]);
 
@@ -88,7 +88,7 @@ class WebhookController extends Controller
     {
         $this->validate($request, [
             'webhook_code' => 'in:PENDING_EXPIRATION',
-            'item_id' => 'required|string|exists:items,external_id',
+            'item_id' => 'required|string|exists:plaid_items,external_id',
             'consent_expiration_time' => 'required|string|date_format:c'
         ]);
 
@@ -103,7 +103,7 @@ class WebhookController extends Controller
     {
         $this->validate($request, [
             'webhook_code' => 'in:ERROR',
-            'item_id' => 'required|string|exists:items,external_id',
+            'item_id' => 'required|string|exists:plaid_items,external_id',
             'error.display_message' => 'required|string',
             'error.error_code' => 'required|string',
             'error.error_message' => 'required|string',
