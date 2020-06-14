@@ -47,6 +47,8 @@ class QueueTransactionNotification implements ShouldQueue
 
         if ($account->teams->first()->users->count === 0) return;
 
+        if (!$account->isDepository()) return;
+
         $toNotify = $this->transaction->account->teams->first()->users->first();
 
         $toNotify->notify(new NewTransaction($this->transaction));
