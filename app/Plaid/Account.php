@@ -46,7 +46,7 @@ class Account extends Model implements ContractsAccount
         return $this->name;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }

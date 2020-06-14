@@ -6,7 +6,7 @@ interface Account extends HasUniversalIdentifier
 {
     public function getName(): string;
 
-    public function getType(): string;
+    public function getType(): ?string;
 
     public function getCurrencyCode(): string;
 
