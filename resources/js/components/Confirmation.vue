@@ -19,7 +19,7 @@ export default {
         async confirm(value) {
             this.loading = true
             try {
-                const response = await api.put(`/transactions/${this.transaction.external_id}/confirm`, { confirmed: !!value })
+                const response = await api.put(`/transactions/${this.transaction.id}/confirm`, { confirmed: !!value })
 
                 this.confirmed(!!response.data.confirmed)
             } finally {

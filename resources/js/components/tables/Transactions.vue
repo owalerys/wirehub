@@ -23,7 +23,7 @@
                     :transaction="slotProps.item"
                     @confirmed="
                         updateConfirmedStatus(
-                            slotProps.item.external_id,
+                            slotProps.item.id,
                             $event
                         )
                     "
@@ -73,8 +73,8 @@ export default {
         }
     },
     methods: {
-        updateConfirmedStatus(externalId, value) {
-            this.$emit("confirmed", { externalId, confirmed: value });
+        updateConfirmedStatus(id, value) {
+            this.$emit("confirmed", { id, confirmed: value });
         }
     }
 };

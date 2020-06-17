@@ -239,9 +239,9 @@ export default {
                 this.deleteLoading = false
             }
         },
-        updateTransactionConfirmation({ externalId, confirmed }) {
+        updateTransactionConfirmation({ id, confirmed }) {
             const transaction = this.transactions.find(
-                transaction => transaction.external_id === externalId
+                transaction => transaction.id === id
             );
 
             transaction.confirmed = confirmed;
