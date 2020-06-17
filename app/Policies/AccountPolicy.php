@@ -37,7 +37,7 @@ class AccountPolicy
     {
         return $this->userIsAdmin($user)
             || ($this->userIsTeamMember($user)
-                && in_array($account->getResourceIdentifier(), $user->team->accountResourceIdentifiers()));
+                && in_array($user->team_id, $account->teams->pluck('id')->values()));
     }
 
     /**
