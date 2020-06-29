@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Flinks\Account;
 use App\Flinks\Item;
 use App\Flinks\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
@@ -119,7 +120,7 @@ class Flinks
     {
         $this->item->username = $login['Username'];
         $this->item->is_scheduled_refresh = $login['IsScheduledRefresh'];
-        $this->item->last_refresh = $login['LastRefresh'];
+        $this->item->last_refresh = Carbon::parse($login['LastRefresh']);
 
         $this->item->save();
 
