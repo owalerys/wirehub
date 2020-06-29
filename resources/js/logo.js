@@ -50,5 +50,7 @@ export default {
     Laurentienne,
     CoastCapital,
     HSBC,
-    EQBank
+    EQBank,
+    // BMO Business
+    '196': BMO
 }
