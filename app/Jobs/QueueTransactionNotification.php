@@ -45,7 +45,7 @@ class QueueTransactionNotification implements ShouldQueue
         // No team associated
         if ($account->teams->count() === 0) return;
 
-        if ($account->teams->first()->users->count === 0) return;
+        if ($account->teams->first()->users->count() === 0) return;
 
         if (!$account->isDepository()) return;
 
