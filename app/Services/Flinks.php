@@ -79,7 +79,7 @@ class Flinks
             'Save' => !$cached
         ]);
 
-        if (!$response->ok()) $this->handleError($response);
+        if (!$response->successful()) $this->handleError($response);
 
         $this->requestId = $response['RequestId'];
         $this->item = $item;
@@ -94,7 +94,7 @@ class Flinks
             'WithBalance' => true
         ]);
 
-        if (!$response->ok()) $this->handleError($response);
+        if (!$response->successful()) $this->handleError($response);
 
         if ($response->status() === 202) {
             $data = null;
@@ -166,7 +166,7 @@ class Flinks
 
         $response = $this->getClient()->get('GetAccountsSummaryAsync/' . $this->requestId);
 
-        if (!$response->ok()) $this->handleError($response);
+        if (!$response->successful()) $this->handleError($response);
 
         if ($response->status() === 202) return null;
 
@@ -184,7 +184,7 @@ class Flinks
             'DaysOfTransactions' => $fullHistory ? 'Days365' : 'Days90'
         ]);
 
-        if (!$response->ok()) $this->handleError($response);
+        if (!$response->successful()) $this->handleError($response);
 
         if ($response->status() === 202) {
             $data = null;
@@ -211,7 +211,7 @@ class Flinks
 
         $response = $this->getClient()->get('GetAccountsDetailAsync/' . $this->requestId);
 
-        if (!$response->ok()) $this->handleError($response);
+        if (!$response->successful()) $this->handleError($response);
 
         if ($response->status() === 202) return null;
 
@@ -225,13 +225,13 @@ class Flinks
             'isActivated' => false,
         ]);
 
-        if (!$response->ok()) $this->handleError($response);
+        if (!$response->successful()) $this->handleError($response);
     }
 
     public function deleteCard(Item $item)
     {
         $response = $this->getClient()->delete('DeleteCard/' . $item->login_id);
 
-        if (!$response->ok()) $this->handleError($response);
+        if (!$response->successful()) $this->handleError($response);
     }
 }

@@ -57,7 +57,7 @@ class Plaid
             ]
         ));
 
-        if (!$response->ok()) throw new \Exception($response);
+        if (!$response->successful()) throw new \Exception($response);
 
         $item = $this->getItem($response['access_token']);
 
@@ -72,7 +72,7 @@ class Plaid
             'key_id' => $keyId
         ]));
 
-        if (!$response->ok()) throw new \Exception($response);
+        if (!$response->successful()) throw new \Exception($response);
 
         return new JWK($response['key']);
     }
@@ -83,7 +83,7 @@ class Plaid
             'access_token' => $accessToken
         ]));
 
-        if (!$response->ok()) throw new \Exception($response);
+        if (!$response->successful()) throw new \Exception($response);
 
         $item = Item::updateOrCreate(
             [ 'external_id' => $response['item']['item_id'] ],
@@ -123,7 +123,7 @@ class Plaid
             'access_token' => $item->access_token
         ]));
 
-        if (!$response->ok()) throw new \Exception($response);
+        if (!$response->successful()) throw new \Exception($response);
 
         // TRANSFORM
         $accounts = [];
@@ -174,7 +174,7 @@ class Plaid
                 ]
             ]));
 
-            if (!$response->ok()) {
+            if (!$response->successful()) {
                 $fail = true;
                 throw new \Exception($response);
             }
@@ -199,7 +199,7 @@ class Plaid
             'access_token' => $item->access_token,
         ]));
 
-        if (!$response->ok()) {
+        if (!$response->successful()) {
             throw new \Exception($response);
         }
     }
@@ -221,7 +221,7 @@ class Plaid
             'access_token' => $item->access_token
         ]));
 
-        if (!$response->ok()) {
+        if (!$response->successful()) {
             throw new \Exception($response);
         }
     }
