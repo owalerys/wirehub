@@ -104,6 +104,8 @@ class Discovery
 
     public function identifyItem(string $identifier)
     {
+        if (!$this->validateIdentifier($identifier)) return;
+
         if ($this->getType($identifier) !== self::TYPE_ITEM) return;
 
         $provider = $this->getProvider($identifier);
@@ -118,6 +120,8 @@ class Discovery
 
     public function identifyAccount(string $identifier)
     {
+        if (!$this->validateIdentifier($identifier)) return;
+
         if ($this->getType($identifier) !== self::TYPE_ACCOUNT) return;
 
         $provider = $this->getProvider($identifier);
@@ -132,6 +136,8 @@ class Discovery
 
     public function identifyTransaction(string $identifier)
     {
+        if (!$this->validateIdentifier($identifier)) return;
+
         if ($this->getType($identifier) !== self::TYPE_TRANSACTION) return;
 
         $provider = $this->getProvider($identifier);
@@ -142,6 +148,11 @@ class Discovery
 
         if ($provider === self::PROVIDER_PLAID) return PlaidTransaction::where('external_id', $uuid)->first();
         if ($provider === self::PROVIDER_FLINKS) return FlinksTransaction::where('external_id', $uuid)->first();
+    }
+
+    private function validateIdentifier(string $identifier): bool
+    {
+        return count(explode(':', $identifier)) === 3;
     }
 
     private function getProvider(string $identifier): ?string
