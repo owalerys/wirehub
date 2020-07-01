@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/accounts', 'AccountController@getAccounts');
     Route::get('/accounts/{accountId}', 'AccountController@getAccount');
+    Route::patch('/accounts/{accountId}', 'AccountController@patchAccount');
     Route::get('/accounts/{accountId}/transactions', 'AccountController@getAccountTransactions');
     Route::get('/accounts/{accountId}/transactions/historical', 'AccountController@getAccountTransactionsHistorical');
     Route::put('/accounts/{accountId}/team', 'AccountController@putTeamLink');

@@ -30,8 +30,17 @@
             <br />
             <b>Last 4:</b> ***{{ account.mask }}<br />
             <b>Currency:</b> {{ account.currency_code }}
-            <br />
         </v-card-text>
+        <v-card-actions>
+            <v-btn
+                text
+                v-if="!loading && actions"
+                color="primary"
+                @click="rename"
+                >Rename Account</v-btn
+            >
+            <v-spacer />
+        </v-card-actions>
     </v-card>
 </template>
 
@@ -43,6 +52,11 @@ export default {
     computed: {
         logos() {
             return logos
+        }
+    },
+    methods: {
+        rename() {
+            this.$emit('rename')
         }
     }
 }

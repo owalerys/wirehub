@@ -5,6 +5,7 @@ namespace App\Contracts;
 interface Account extends HasUniversalIdentifier
 {
     public function getName(): string;
+    public function getNickname(): ?string;
 
     public function getType(): ?string;
 

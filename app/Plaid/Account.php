@@ -46,6 +46,11 @@ class Account extends Model implements ContractsAccount
         return $this->name;
     }
 
+    public function getNickname(): ?string
+    {
+        return $this->nickname;
+    }
+
     public function getType(): ?string
     {
         return $this->type;

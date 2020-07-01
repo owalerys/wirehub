@@ -1,7 +1,7 @@
 <template>
     <v-row justify="start" align="start">
         <v-col md="6" cols="12">
-            <AccountCard :loading="loading" :account="account" :actions="isAdmin" />
+            <AccountCard :loading="loading" :account="account" :actions="isAdmin" @rename="nicknameDialog = true" />
         </v-col>
         <v-col v-if="isAdmin" md="6" cols="12">
             <TeamCard
@@ -107,6 +107,32 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="nicknameDialog" scrollable max-width="300px">
+            <v-card>
+                <v-card-title>Change Nickname</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text style="height: 300px;">
+                    <v-text-field v-model="nicknameValue"></v-text-field>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="nicknameDialog = false"
+                        :disabled="loading"
+                        >Close</v-btn
+                    >
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="saveNickname()"
+                        :loading="loading"
+                        >Save</v-btn
+                    >
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-row>
 </template>
 
@@ -133,7 +159,9 @@ export default {
             transactions: [],
             account: {},
             merchantDialog: false,
+            nicknameDialog: false,
             selectedMerchant: null,
+            nicknameValue: '',
             deleteLoading: false,
             itemWithAccounts: null,
             deleteDialog: false
@@ -179,6 +207,8 @@ export default {
 
                 Vue.set(this, "account", accountResponse.data);
 
+                this.nicknameValue = this.account.name;
+
                 this.selectedMerchant =
                     this.account &&
                     this.account.teams &&
@@ -201,6 +231,24 @@ export default {
                 await this.load();
 
                 this.merchantDialog = false;
+            } catch (e) {
+                console.error(e);
+            } finally {
+                this.loading = false;
+            }
+        },
+        async saveNickname() {
+            this.loading = true;
+
+            try {
+                const response = await api.patch(
+                    `/accounts/${this.accountId}`,
+                    { nickname: this.nicknameValue }
+                );
+
+                await this.load();
+
+                this.nicknameDialog = false;
             } catch (e) {
                 console.error(e);
             } finally {

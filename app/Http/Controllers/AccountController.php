@@ -39,6 +39,27 @@ class AccountController extends Controller
         return response()->json(new ResourcesAccount($account));
     }
 
+    public function patchAccount(string $accountId, Discovery $service, Request $request)
+    {
+        $account = $service->identifyAccount($accountId);
+
+        if (!$account) return abort(404);
+
+        Gate::authorize('update-account', $account);
+
+        $this->validate($request, [
+            'nickname' => 'sometimes|string|nullable'
+        ]);
+
+        if ($request->has('nickname')) {
+            $account->nickname = $request->input('nickname');
+        }
+
+        $account->save();
+
+        return response()->json();
+    }
+
     public function getAccountTransactions(string $accountId, Discovery $service)
     {
         $account = $service->identifyAccount($accountId);

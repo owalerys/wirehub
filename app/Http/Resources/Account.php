@@ -25,7 +25,7 @@ class Account extends JsonResource
     {
         return [
             'id' => $this->getResourceIdentifier(),
-            'name' => $this->getName(),
+            'name' => $this->getNickname() ?: $this->getName(),
             'type' => $this->getType(),
             'numbers' => $this->getNumbers(),
             'balances' => $this->getBalances(),
