@@ -47,7 +47,7 @@ class AccountController extends Controller
 
         Gate::authorize('view-account', $account);
 
-        $transactions = $account->transactions()->orderBy('date', 'desc')->limit(200)->get();
+        $transactions = $account->transactions()->wire(Auth::user())->orderBy('date', 'desc')->limit(200)->get();
 
         return response()->json(ResourcesTransaction::collection($transactions));
     }
@@ -63,7 +63,7 @@ class AccountController extends Controller
 
         $output = [];
 
-        foreach($account->transactions()->orderBy('date', 'desc')->cursor() as $transaction) {
+        foreach($account->transactions()->wire(Auth::user())->orderBy('date', 'desc')->cursor() as $transaction) {
             /** @var ContractsTransaction $transaction */
             array_push($output, [
                 'ID' => $transaction->getNumericalID(),

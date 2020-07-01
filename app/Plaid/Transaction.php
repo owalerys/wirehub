@@ -6,6 +6,7 @@ use App\Concerns\HasUniversalIdentifier;
 use App\Concerns\IsPlaid;
 use App\Contracts\Transaction as ContractsTransaction;
 use App\Services\Discovery;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -143,5 +144,17 @@ class Transaction extends Model implements ContractsTransaction
     public function account()
     {
         return $this->belongsTo(Account::class, 'account_id', 'external_id');
+    }
+
+    public function scopeWire($query, User $user)
+    {
+        if ($user->hasRole(['admin', 'super-admin'])) return $query;
+
+        $query->where('name', 'like', '%wire%');
+        $query->orWhere('name', 'like', '%transfer%');
+        $query->orWhere('name', 'like', '%trnsfr%');
+        $query->orWhere('name', 'like', '%deposit%');
+
+        return $query;
     }
 }
