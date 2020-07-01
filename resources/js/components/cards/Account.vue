@@ -11,7 +11,7 @@
             </v-avatar>
             <v-spacer
         /></v-card-title>
-        <v-card-text v-if="!loading">
+        <v-card-text v-if="!loading && actions">
             <b>Name:</b> {{ account.name }}
             <br />
             <b>Last 4:</b> ***{{ account.mask }}<br />
@@ -25,6 +25,13 @@
             <b v-if="account.balances.available">Available Balance:</b>
             {{ account.balances.available ? (account.balances.available | money) : '' }}
         </v-card-text>
+        <v-card-text v-else-if="!loading">
+            <b>Name:</b> {{ account.name }}
+            <br />
+            <b>Last 4:</b> ***{{ account.mask }}<br />
+            <b>Currency:</b> {{ account.currency_code }}
+            <br />
+        </v-card-text>
     </v-card>
 </template>
 
@@ -32,7 +39,7 @@
 import logos from '../../logo'
 
 export default {
-    props: ['account', 'loading'],
+    props: ['account', 'loading', 'actions'],
     computed: {
         logos() {
             return logos

@@ -1,7 +1,7 @@
 <template>
     <v-row justify="start" align="start">
         <v-col md="6" cols="12">
-            <AccountCard :loading="loading" :account="account" />
+            <AccountCard :loading="loading" :account="account" :actions="isAdmin" />
         </v-col>
         <v-col v-if="isAdmin" md="6" cols="12">
             <TeamCard
