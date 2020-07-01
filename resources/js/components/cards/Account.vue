@@ -23,7 +23,7 @@
             {{ account.balances.current | money }}
             <br />
             <b v-if="account.balances.available">Available Balance:</b>
-            {{ account.balances.available ? (account.balances.available | money) : '' }}
+            <span v-if="account.balances.available">{{ account.balances.available | money }}</span>
         </v-card-text>
         <v-card-text v-else-if="!loading">
             <b>Name:</b> {{ account.name }}
