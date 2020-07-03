@@ -146,16 +146,18 @@ class Flinks
 
             if (isset($account['Transactions'])) {
                 foreach ($account['Transactions'] as $transaction) {
-                    $createdTransaction = Transaction::updateOrCreate([
-                        'external_id' => $transaction['Id'],
-                        'account_id' => $account['Id'],
-                        'code' => $transaction['Code'],
-                        'description' => $transaction['Description'],
-                        'debit' => $transaction['Debit'],
-                        'credit' => $transaction['Credit'],
-                        'balance' => $transaction['Balance'],
-                        'date' => $transaction['Date']
-                    ]);
+                    $createdTransaction = Transaction::updateOrCreate(
+                        ['external_id' => $transaction['Id']],
+                        [
+                            'account_id' => $account['Id'],
+                            'code' => $transaction['Code'],
+                            'description' => $transaction['Description'],
+                            'debit' => $transaction['Debit'],
+                            'credit' => $transaction['Credit'],
+                            'balance' => $transaction['Balance'],
+                            'date' => $transaction['Date']
+                        ]
+                    );
                 }
             }
         }
