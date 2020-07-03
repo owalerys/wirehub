@@ -119,6 +119,7 @@ class Flinks
         $this->item->username = $login['Username'];
         $this->item->is_scheduled_refresh = $login['IsScheduledRefresh'];
         $this->item->last_refresh = Carbon::parse($login['LastRefresh']);
+        $this->item->error = null;
 
         $this->item->save();
 
