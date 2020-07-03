@@ -38,12 +38,10 @@ class Flinks
     private function handleError(Response $response)
     {
         $statusCode = $response->status();
-        $reason = $response['FlinksCode'];
+        $reason = isset($response['FlinksCode']) ? $response['FlinksCode'] : null;
 
-        if ($statusCode === 400 && in_array($reason, ['INVALID_LOGIN'])) {
-            $this->item->error = $response['FlinksCode'];
-            $this->item->save();
-        } elseif ($statusCode === 401 && in_array($reason, [
+        if ($reason && $statusCode >= 400 && $statusCode < 500 && in_array($reason, [
+            'INVALID_LOGIN',
             'INVALID_USERNAME',
             'INVALID_PASSWORD',
             'INVALID_SECURITY_RESPONSE',
