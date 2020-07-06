@@ -50,6 +50,11 @@ export default {
                 this.$emit("error");
                 this.$emit("input", false);
             }
+
+            const requestId = data.requestId || null;
+            if (requestId) {
+                console.log('FLINKS - CONNECT REQUEST', requestId)
+            }
         }
     },
     mounted() {
