@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Flinks\Account;
 use App\Flinks\Item;
 use App\Flinks\Transaction;
+use Bugsnag\Breadcrumbs\Breadcrumb;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Carbon\Carbon;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -51,6 +53,8 @@ class Flinks
             'NEW_ACCOUNT',
             'SECURITYRESPONSES_INCOMPLETE'
         ])) {
+            Bugsnag::leaveBreadcrumb('FlinksFailed', Breadcrumb::ERROR_TYPE, $this->item->attributesToArray());
+
             $this->item->error = $response['FlinksCode'];
             $this->item->save();
         }
