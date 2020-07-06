@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Contracts\Item as ContractsItem;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -41,6 +42,7 @@ class UpdateTransactions implements ShouldQueue
 
             $this->delete();
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
             $this->fail($e);
         }
     }
