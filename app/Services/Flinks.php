@@ -149,20 +149,39 @@ class Flinks
 
             if (isset($account['Transactions'])) {
                 foreach ($account['Transactions'] as $transaction) {
-                    $createdTransaction = Transaction::updateOrCreate(
-                        [
-                            'account_id' => $account['Id'],
-                            'description' => $transaction['Description'],
-                            'debit' => $transaction['Debit'],
-                            'credit' => $transaction['Credit'],
-                            'date' => $transaction['Date']
-                        ],
-                        [
-                            'external_id' => $transaction['Id'],
-                            'code' => $transaction['Code'],
-                            'balance' => $transaction['Balance']
-                        ]
-                    );
+                    $exists = Transaction::where('external_id', $transaction['Id'])->first();
+
+                    if ($exists) {
+                        $updatedTransaction = Transaction::updateOrCreate(
+                            [
+                                'external_id' => $transaction['Id'],
+                            ],
+                            [
+                                'account_id' => $account['Id'],
+                                'description' => $transaction['Description'],
+                                'debit' => $transaction['Debit'],
+                                'credit' => $transaction['Credit'],
+                                'date' => $transaction['Date'],
+                                'code' => $transaction['Code'],
+                                'balance' => $transaction['Balance']
+                            ]
+                        );
+                    } else {
+                        $createdTransaction = Transaction::updateOrCreate(
+                            [
+                                'account_id' => $account['Id'],
+                                'description' => $transaction['Description'],
+                                'debit' => $transaction['Debit'],
+                                'credit' => $transaction['Credit'],
+                                'date' => $transaction['Date']
+                            ],
+                            [
+                                'external_id' => $transaction['Id'],
+                                'code' => $transaction['Code'],
+                                'balance' => $transaction['Balance']
+                            ]
+                        );
+                    }
                 }
             }
         }
