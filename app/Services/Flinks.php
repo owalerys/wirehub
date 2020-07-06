@@ -82,10 +82,11 @@ class Flinks
             'Save' => !$cached
         ]);
 
+        $this->item = $item;
+
         if (!$response->successful()) $this->handleError($response);
 
         $this->requestId = $response['RequestId'];
-        $this->item = $item;
     }
 
     public function getAccountsSummary()
