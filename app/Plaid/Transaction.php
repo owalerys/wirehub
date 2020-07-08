@@ -7,9 +7,9 @@ use App\Concerns\IsPlaid;
 use App\Contracts\Transaction as ContractsTransaction;
 use App\Services\Discovery;
 use App\User;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Builder;
 
 class Transaction extends Model implements ContractsTransaction
 {
@@ -152,7 +152,7 @@ class Transaction extends Model implements ContractsTransaction
         if ($user->hasRole(['admin', 'super-admin'])) return $query;
 
         $query->where('amount', '<', 0);
-        $query->where(function (Builder $query) {
+        $query->where(function (EloquentBuilder $query) {
             $query->where('name', 'like', '%wire%');
             $query->orWhere('name', 'like', '%transfer%');
             $query->orWhere('name', 'like', '%trnsfr%');
