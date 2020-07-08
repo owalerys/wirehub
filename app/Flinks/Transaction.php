@@ -9,6 +9,7 @@ use App\Services\Discovery;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 
 class Transaction extends Model implements ContractsTransaction
 {
@@ -142,10 +143,15 @@ class Transaction extends Model implements ContractsTransaction
     {
         if ($user->hasRole(['admin', 'super-admin'])) return $query;
 
-        $query->where('description', 'like', '%wire%');
-        $query->orWhere('description', 'like', '%transfer%');
-        $query->orWhere('description', 'like', '%trnsfr%');
-        $query->orWhere('description', 'like', '%deposit%');
+        $query->where('debit', null);
+        $query->where(function (Builder $query) {
+            $query->where('description', 'like', '%wire%');
+            $query->orWhere('description', 'like', '%transfer%');
+            $query->orWhere('description', 'like', '%trnsfr%');
+            $query->orWhere('description', 'like', '%deposit%');
+            $query->orWhere('description', 'like', '%cheque%');
+            $query->orWhere('code', '=', 'CK');
+        });
 
         return $query;
     }
