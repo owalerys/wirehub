@@ -27,7 +27,7 @@ export default {
             return process.env.MIX_FLINKS_CONNECT_BASE + '?theme=light&desktopLayout=true&fixedHeightEnable=false&institutionFilterEnable=true&daysOfTransactions=Days365&demo=' + this.demo + '&innerRedirect=true&consentEnable=true&accountSelectorEnable=false&enhancedMFA=true'
         },
         demo() {
-            return !!process.env.MIX_FLINKS_DEMO
+            return process.env.MIX_FLINKS_DEMO === true || process.env.MIX_FLINKS_DEMO === 'true'
         }
     },
     methods: {
