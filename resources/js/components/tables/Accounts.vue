@@ -20,7 +20,9 @@
                 <v-avatar size="32">
                     <img
                         :src="
-                            slotProps.item.item.institution_meta ? `data:image/png;base64, ${slotProps.item.item.institution_meta.logo}` : logos[slotProps.item.item.institution]
+                            slotProps.item.item.institution_meta
+                                ? `data:image/png;base64, ${slotProps.item.item.institution_meta.logo}`
+                                : logos[slotProps.item.item.institution]
                         "
                     />
                 </v-avatar>
@@ -37,13 +39,13 @@
 </template>
 
 <script>
-import logos from '../../logo'
+import logos from "../../logo";
 
 export default {
-    props: ["actions", "loading", "accounts", 'perPage'],
-    data() {
-        return {
-            headers: [
+    props: ["actions", "loading", "accounts", "perPage"],
+    computed: {
+        headers() {
+            return this.actions ? [
                 {
                     text: "Name",
                     align: "start",
@@ -54,15 +56,23 @@ export default {
                 { text: "Balance", value: "balances.current", sortable: false },
                 { text: "Currency", value: "currency_code" },
                 { text: "Type", value: "type" }
-            ]
-        };
-    },
-    computed: {
+            ] : [
+                {
+                    text: "Name",
+                    align: "start",
+                    value: "name"
+                },
+                { text: "Institution", value: "item.institution.name" },
+                { text: "Last 4", value: "mask" },
+                { text: "Currency", value: "currency_code" },
+                { text: "Type", value: "type" }
+            ];
+        },
         logos() {
-            return logos
+            return logos;
         },
         filteredAccounts() {
-            return this.accounts.filter(account => account.is_depository)
+            return this.accounts.filter(account => account.is_depository);
         }
     },
     methods: {
