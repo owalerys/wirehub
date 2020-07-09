@@ -76,11 +76,18 @@ class Flinks
 
     public function startSession(Item $item, bool $cached = true)
     {
-        $response = $this->getClient()->post('Authorize', [
+        $params = [
             'LoginId' => $item->login_id,
             'MostRecentCached' => $cached,
             'Save' => !$cached
-        ]);
+        ];
+
+        if ($item->institution === '196' && $cached === false) {
+            $params['Institution'] = 19;
+            $params['Url'] = 'https://www21.bmo.com/?eaiLocaleString=en';
+        }
+
+        $response = $this->getClient()->post('Authorize', $params);
 
         $this->item = $item;
 
