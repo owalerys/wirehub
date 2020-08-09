@@ -16,6 +16,7 @@ class Discovery
 {
     const PROVIDER_PLAID = 'plaid';
     const PROVIDER_FLINKS = 'flinks';
+    const PROVIDER_BACKRUB = 'backrub';
 
     const TYPE_ACCOUNT = 'account';
     const TYPE_ITEM = 'item';
