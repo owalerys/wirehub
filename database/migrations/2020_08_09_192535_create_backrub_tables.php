@@ -30,7 +30,7 @@ class CreateBackrubTables extends Migration
             $table->string('nickname')->nullable();
             $table->string('institution');
             $table->unsignedBigInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('backrub_items');
+            $table->foreign('item_id')->references('id')->on('backrub_items')->cascadeOnDelete();
             $table->timestamps();
         });
 
@@ -38,7 +38,7 @@ class CreateBackrubTables extends Migration
             $table->id();
             $table->unsignedInteger('external_id');
             $table->unsignedBigInteger('account_id');
-            $table->foreign('account_id')->references('id')->on('backrub_accounts');
+            $table->foreign('account_id')->references('id')->on('backrub_accounts')->cascadeOnDelete();
             $table->dateTime('posted_at');
             $table->decimal('amount', 15, 2);
             $table->string('currency');
@@ -61,8 +61,8 @@ class CreateBackrubTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('backrub_items');
-        Schema::dropIfExists('backrub_accounts');
         Schema::dropIfExists('backrub_transactions');
+        Schema::dropIfExists('backrub_accounts');
+        Schema::dropIfExists('backrub_items');
     }
 }
