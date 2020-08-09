@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Backrub\Account as BackrubAccount;
+use App\Backrub\Item as BackrubItem;
+use App\Backrub\Transaction as BackrubTransaction;
 use App\Contracts\Account as ContractsAccount;
 use App\Contracts\HasUniversalIdentifier;
 use App\Flinks\Account as FlinksAccount;
@@ -62,6 +65,12 @@ class Discovery
         $flinksAccounts = FlinksAccount::with('item')->get();
         $output = $output->merge(self::keyUniversal($flinksAccounts));
 
+        /**
+         * BACKRUB
+         */
+        $backrubAccounts = BackrubAccount::with('item')->get();
+        $output = $output->merge(self::keyUniversal($backrubAccounts));
+
         return $output;
     }
 
@@ -80,6 +89,12 @@ class Discovery
          */
         $flinksItems = FlinksItem::all();
         $output = $output->merge(self::keyUniversal($flinksItems));
+
+        /**
+         * BACKRUB
+         */
+        $backrubItems = BackrubItem::all();
+        $output = $output->merge(self::keyUniversal($backrubItems));
 
         return $output;
     }
@@ -100,6 +115,12 @@ class Discovery
         $flinksItems = FlinksItem::has('accounts.teams')->with('accounts.teams')->get();
         $output = $output->merge(self::keyUniversal($flinksItems));
 
+        /**
+         * BACKRUB
+         */
+        $backrubItems = FlinksItem::with('accounts.teams')->get();
+        $output = $output->merge(self::keyUniversal($backrubItems));
+
         return $output;
     }
 
@@ -117,6 +138,7 @@ class Discovery
 
         if ($provider === self::PROVIDER_PLAID) return PlaidItem::where('external_id', $uuid)->first();
         if ($provider === self::PROVIDER_FLINKS) return FlinksItem::where('id', $uuid)->first();
+        if ($provider === self::PROVIDER_BACKRUB) return BackrubItem::where('id', $uuid)->first();
     }
 
     public function identifyAccount(string $identifier)
@@ -133,6 +155,7 @@ class Discovery
 
         if ($provider === self::PROVIDER_PLAID) return PlaidAccount::where('external_id', $uuid)->first();
         if ($provider === self::PROVIDER_FLINKS) return FlinksAccount::where('external_id', $uuid)->first();
+        if ($provider === self::PROVIDER_BACKRUB) return BackrubAccount::where('id', $uuid)->first();
     }
 
     public function identifyTransaction(string $identifier)
@@ -149,6 +172,7 @@ class Discovery
 
         if ($provider === self::PROVIDER_PLAID) return PlaidTransaction::where('external_id', $uuid)->first();
         if ($provider === self::PROVIDER_FLINKS) return FlinksTransaction::where('external_id', $uuid)->first();
+        if ($provider === self::PROVIDER_BACKRUB) return BackrubTransaction::where('id', $uuid)->first();
     }
 
     private function validateIdentifier(string $identifier): bool
@@ -164,6 +188,7 @@ class Discovery
 
         if ($provider === self::trimParameter(self::PROVIDER_PLAID)) return self::PROVIDER_PLAID;
         if ($provider === self::trimParameter(self::PROVIDER_FLINKS)) return self::PROVIDER_FLINKS;
+        if ($provider === self::trimParameter(self::PROVIDER_BACKRUB)) return self::PROVIDER_BACKRUB;
     }
 
     private function getType(string $identifier): ?string
