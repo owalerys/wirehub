@@ -28,7 +28,7 @@ class Transaction extends Model implements ContractsTransaction
         'sender_address',
         'sender_reference_number',
         'receiver_name',
-        'receiver_back_account_number',
+        'receiver_bank_account_number',
         'confirmed',
         'confirmed_at'
     ];
