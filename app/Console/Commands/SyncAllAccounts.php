@@ -14,7 +14,7 @@ class SyncAllAccounts extends Command
      *
      * @var string
      */
-    protected $signature = 'accounts:sync';
+    protected $signature = 'accounts:sync {itemId?}';
 
     /**
      * The console command description.
@@ -40,7 +40,11 @@ class SyncAllAccounts extends Command
      */
     public function handle(Discovery $service)
     {
-        $items = $service->getAllItems();
+        if ($itemId = $this->argument('itemId')) {
+            $items = [$service->identifyItem($itemId)];
+        } else {
+            $items = $service->getAllItems();
+        }
 
         foreach ($items as $item) {
             $this->info('Syncing: ' . $item->getResourceIdentifier());
