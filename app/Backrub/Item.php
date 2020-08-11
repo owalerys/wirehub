@@ -8,18 +8,17 @@ use App\Contracts\Item as ContractsItem;
 use App\Services\Discovery;
 use App\Services\Backrub;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model implements ContractsItem
 {
-    use SoftDeletes, IsBackrub, HasUniversalIdentifier;
+    use IsBackrub, HasUniversalIdentifier;
 
     protected $table = 'backrub_items';
 
-    protected $hidden = ['password', 'email'];
+    protected $hidden = ['password', 'username'];
 
     protected $fillable = [
-        'external_id', 'email', 'password', 'name', 'error'
+        'external_id', 'username', 'password', 'name', 'error'
     ];
 
     public function getUniqueId(): string

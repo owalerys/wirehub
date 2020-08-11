@@ -9,11 +9,10 @@ use App\Services\Discovery;
 use App\Team;
 use App\Teamable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Account extends Model implements ContractsAccount
 {
-    use SoftDeletes, IsBackrub, HasUniversalIdentifier;
+    use IsBackrub, HasUniversalIdentifier;
 
     protected $table = 'backrub_accounts';
 

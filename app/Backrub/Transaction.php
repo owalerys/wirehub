@@ -10,11 +10,10 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model implements ContractsTransaction
 {
-    use SoftDeletes, IsBackrub, HasUniversalIdentifier;
+    use IsBackrub, HasUniversalIdentifier;
 
     protected $table = 'backrub_transactions';
 
