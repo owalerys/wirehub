@@ -54,12 +54,10 @@ class Item extends Model implements ContractsItem
 
     public function eagerRefresh()
     {
-        // TODO implement refresh service
-        /** @var Flinks $service */
-        $service = app(Flinks::class);
+        /** @var Backrub $service */
+        $service = app(Backrub::class);
 
-        $service->startSession($this, false);
-        $service->getAccountsDetail(false);
+        $service->syncAccounts($this);
     }
 
     /**
@@ -67,22 +65,12 @@ class Item extends Model implements ContractsItem
      */
     public function summaryRefresh()
     {
-        // TODO implement refresh service
-        /** @var Flinks $service */
-        $service = app(Flinks::class);
-
-        $service->startSession($this);
-        $service->getAccountsSummary();
+        $this->eagerRefresh();
     }
 
     public function detailRefresh(bool $fullHistory = false)
     {
-        // TODO implement refresh service
-        /** @var Flinks $service */
-        $service = app(Flinks::class);
-
-        $service->startSession($this);
-        $service->getAccountsDetail($fullHistory);
+        $this->eagerRefresh();
     }
 
     public function accounts()
