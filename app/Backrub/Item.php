@@ -49,7 +49,7 @@ class Item extends Model implements ContractsItem
 
     public function disconnect()
     {
-        $this->delete();
+        // TODO handle backrub disconnect
     }
 
     public function eagerRefresh()
