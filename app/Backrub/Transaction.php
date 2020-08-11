@@ -65,7 +65,7 @@ class Transaction extends Model implements ContractsTransaction
 
     public function getDate(): string
     {
-        $date = new Carbon($this->posted_at);
+        $date = new Carbon($this->date);
 
         return $date->format('Y-m-d');
     }
