@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
         PlaidTransaction::observe(TransactionObserver::class);
         FlinksTransaction::observe(TransactionObserver::class);
-        BackrubTransaction::observer(TransactionObserver::class);
+        BackrubTransaction::observe(TransactionObserver::class);
     }
 }
