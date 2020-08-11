@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Flinks\Transaction as FlinksTransaction;
 use App\Observers\TransactionObserver;
 use App\Plaid\Transaction as PlaidTransaction;
+use App\Backrub\Transaction as BackrubTransaction;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
         PlaidTransaction::observe(TransactionObserver::class);
         FlinksTransaction::observe(TransactionObserver::class);
+        BackrubTransaction::observer(TransactionObserver::class);
     }
 }
