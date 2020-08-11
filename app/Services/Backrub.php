@@ -124,7 +124,7 @@ class Backrub
         foreach ($transactions as $transaction) {
             $transactionRecord = Transaction::updateOrCreate([
                 'external_id' => $transaction['id'],
-                'account_id' => $transaction['bankAccountId']
+                'account_id' => $account->id
             ], [
                 'sender_reference_number' => $transaction['senderReferenceNumber'],
                 'amount' => $transaction['amount'],
