@@ -132,7 +132,7 @@ class Backrub
                 'sender_name' => $transaction['senderName'],
                 'receiver_bank_account_number' => $transaction['receiverBankAccountNumber'],
                 'receiver_reference_number' => $transaction['receiverReferenceNumber'],
-                'posted_at' => new Carbon($transaction['postedAt']),
+                'date' => new Carbon($transaction['postedAt']),
                 'receiver_name' => $transaction['receiverName'],
                 'currency' => $transaction['currency'],
             ]);

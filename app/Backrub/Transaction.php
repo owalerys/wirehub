@@ -20,7 +20,7 @@ class Transaction extends Model implements ContractsTransaction
     protected $fillable = [
         'external_id',
         'account_id',
-        'posted_at',
+        'date',
         'amount',
         'currency',
         'receiver_reference_number',
@@ -55,7 +55,7 @@ class Transaction extends Model implements ContractsTransaction
 
     public function getName(): string
     {
-        return $this->description;
+        return $this->receiver_reference_number . ': ' . $this->sender_name . ' - ' . $this->sender_address;
     }
 
     public function getAmount(): string
