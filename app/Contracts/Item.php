@@ -24,4 +24,6 @@ interface Item extends HasUniversalIdentifier
      * Summary Refresh (Accounts)
      */
     public function summaryRefresh();
+
+    public function canDelete(): bool;
 }

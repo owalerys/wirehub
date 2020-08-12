@@ -91,4 +91,9 @@ class Item extends Model implements ContractsItem
     {
         return $this->hasMany(Account::class, 'item_id', 'external_id');
     }
+
+    function canDelete(): bool
+    {
+        return true;
+    }
 }
