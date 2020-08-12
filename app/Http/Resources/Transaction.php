@@ -41,7 +41,8 @@ class Transaction extends JsonResource
             'transaction_code' => $this->getTransactionCode(),
             'confirmed' => $this->getConfirmed(),
             'confirmed_at' => $this->getConfirmedAt(),
-            'parent_id' => $this->getParentResourceIdentifier()
+            'parent_id' => $this->getParentResourceIdentifier(),
+            'wire_meta' => $this->getWireMeta()
         ];
     }
 }

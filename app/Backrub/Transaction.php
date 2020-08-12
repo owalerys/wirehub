@@ -158,4 +158,20 @@ class Transaction extends Model implements ContractsTransaction
 
         return $query;
     }
+
+    public function getWireMeta(): ?object
+    {
+        return (object) [
+            'receiver' => (object) [
+                'reference_number' => $this->receiver_reference_number,
+                'name' => $this->receiver_name,
+                'bank_account_number' => $this->receiver_bank_account_number
+            ],
+            'sender' => (object) [
+                'name' => $this->sender_name,
+                'address' => $this->sender_address,
+                'reference_number' => $this->sender_reference_number
+            ]
+        ];
+    }
 }

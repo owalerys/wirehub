@@ -155,4 +155,9 @@ class Transaction extends Model implements ContractsTransaction
 
         return $query;
     }
+
+    function getWireMeta(): ?object
+    {
+        return null;
+    }
 }

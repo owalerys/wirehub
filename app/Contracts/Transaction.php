@@ -34,4 +34,9 @@ interface Transaction extends HasUniversalIdentifier
     public function getPaymentMeta(): ?object;
     public function getPaymentChannel(): ?string;
     public function getTransactionCode(): ?string;
+
+    /**
+     * Backrub specific, for now
+     */
+    public function getWireMeta(): ?object;
 }
