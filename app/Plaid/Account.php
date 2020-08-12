@@ -109,4 +109,9 @@ class Account extends Model implements ContractsAccount
     {
         return false;
     }
+
+    function hasAccountMeta(): bool
+    {
+        return true;
+    }
 }

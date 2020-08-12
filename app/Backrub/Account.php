@@ -106,6 +106,11 @@ class Account extends Model implements ContractsAccount
 
     public function hasWireMeta(): bool
     {
+        return true;
+    }
+
+    function hasAccountMeta(): bool
+    {
         return false;
     }
 }

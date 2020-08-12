@@ -21,4 +21,5 @@ interface Account extends HasUniversalIdentifier
     public function getParentResourceIdentifier(): string;
 
     public function hasWireMeta(): bool;
+    public function hasAccountMeta(): bool;
 }
