@@ -55,7 +55,7 @@ class Transaction extends Model implements ContractsTransaction
 
     public function getName(): string
     {
-        return $this->receiver_reference_number . ': ' . $this->sender_name . ' - ' . $this->sender_address;
+        return 'Wire ' . $this->receiver_reference_number;
     }
 
     public function getAmount(): string
