@@ -118,7 +118,7 @@ class Discovery
         /**
          * BACKRUB
          */
-        $backrubItems = FlinksItem::with('accounts.teams')->get();
+        $backrubItems = BackrubItem::with('accounts.teams')->get();
         $output = $output->merge(self::keyUniversal($backrubItems));
 
         return $output;
