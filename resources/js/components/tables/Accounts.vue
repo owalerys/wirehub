@@ -26,13 +26,17 @@
                         "
                     />
                 </v-avatar>
-                {{ slotProps.item.item.institution.name }}
+                {{ typeof slotProps.item.item.institution === 'object' ? slotProps.item.item.institution.name : slotProps.item.item.institution }}
             </template>
             <template v-slot:item.mask="slotProps">
-                ***{{ slotProps.value }}
+                {{ slotProps.value ? `***${slotProps.value}` : 'N/A' }}
             </template>
             <template v-slot:item.balances.current="slotProps">
-                {{ slotProps.value | money }}
+                <template v-if="slotProps.item.has_account_meta">{{ slotProps.value | money }}</template>
+                <template v-else>N/A</template>
+            </template>
+            <template v-slot:item.currency_code="slotProps">
+                {{ slotProps.item.has_account_meta ? slotProps.item.currency_code : 'N/A' }}
             </template>
         </v-data-table>
     </v-card>

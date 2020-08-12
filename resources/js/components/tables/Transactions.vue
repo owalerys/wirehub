@@ -40,7 +40,7 @@ export default {
     components: {
         Confirmation
     },
-    props: ["loading", "transactions", "actions", "account"],
+    props: ["loading", "transactions", "actions", "account", "wires"],
     computed: {
         headers() {
             const headers = [
@@ -53,12 +53,25 @@ export default {
                     text: "Date",
                     align: "start",
                     value: "date"
-                },
-                { text: "Name", value: "name" },
+                }
+            ];
+
+            if (!this.wires) {
+                headers.push({ text: "Name", value: "name" });
+            } else {
+                headers.push(...[
+                    { text: "Receiver Reference", value: "wire_meta.receiver.reference_number" },
+                    { text: "Sender Reference", value: "wire_meta.sender.reference_number" },
+                    { text: "Sender Name", value: "wire_meta.sender.name" },
+                    { text: "Sender Address", value: "wire_meta.sender.address" }
+                ])
+            }
+
+            headers.push(...[
                 { text: "Amount", value: "amount", align: "end" },
                 { text: "Currency", value: "currency_code", align: "end" },
                 { text: "Confirmed", value: "confirmed", align: "end" }
-            ];
+            ]);
 
             if (this.actions) {
                 headers.push({

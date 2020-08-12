@@ -35,7 +35,9 @@ class Account extends JsonResource
             'parent_id' => $this->getParentResourceIdentifier(),
             'teams' => Team::collection($this->whenLoaded('teams')),
             'transactions' => Transaction::collection($this->whenLoaded('transactions')),
-            'item' => new Item($this->whenLoaded('item'))
+            'item' => new Item($this->whenLoaded('item')),
+            'has_account_meta' => $this->hasAccountMeta(),
+            'has_wire_meta' => $this->hasWireMeta()
         ];
     }
 }

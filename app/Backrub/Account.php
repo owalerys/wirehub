@@ -67,7 +67,7 @@ class Account extends Model implements ContractsAccount
     public function getCurrencyCode(): string
     {
         // TODO detect currency from transactions
-        return 'USD';
+        return '';
     }
 
     public function getParentResourceIdentifier(): string

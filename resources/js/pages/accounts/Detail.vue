@@ -20,6 +20,7 @@
                 @confirmed="updateTransactionConfirmation"
                 :actions="isTeamMember"
                 :account="account"
+                :wires="account.has_wire_meta"
                 ><template v-slot:actions
                     ><Download
                         :url="
