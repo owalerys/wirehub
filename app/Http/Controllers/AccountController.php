@@ -93,6 +93,10 @@ class AccountController extends Controller
                 'Amount' => $transaction->getAmount(),
                 'Pending' => $transaction->getPending() !== null ? ($transaction->getPending() ? 'Pending' : 'Settled') : 'N/A',
                 'Currency' => $transaction->getCurrencyCode() ?: $account->getCurrencyCode(),
+                'Receiver Reference' => $transaction->getWireMeta() !== null ? $transaction->getWireMeta()->receiver->reference_number : 'N/A',
+                'Sender Reference' => $transaction->getWireMeta() !== null ? $transaction->getWireMeta()->sender->reference_number : 'N/A',
+                'Sender Name' => $transaction->getWireMeta() !== null ? $transaction->getWireMeta()->sender->name : 'N/A',
+                'Sender Address' => $transaction->getWireMeta() !== null ? $transaction->getWireMeta()->sender->address : 'N/A',
                 'Credited To User' => $transaction->getConfirmed() ? 'Credited' : '',
                 'Credited Changed At' => $transaction->getConfirmedAt() ?: ''
             ]);
