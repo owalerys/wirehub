@@ -51,7 +51,7 @@ class QueueTransactionNotification implements ShouldQueue
 
         $toNotify = $this->transaction->account->teams->first()->users->first();
 
-        if (stripos($toNotify->email, 'delete') === false) return;
+        if (stripos($toNotify->email, 'delete') !== false) return;
 
         $toNotify->notify(new NewTransaction($this->transaction));
     }
