@@ -43,6 +43,6 @@ class ItemPolicy
      */
     public function delete(User $user, Item $item)
     {
-        return $this->userIsAdmin($user);
+        return $item->canDelete() && $this->userIsAdmin($user);
     }
 }
