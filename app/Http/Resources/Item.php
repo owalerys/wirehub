@@ -22,7 +22,8 @@ class Item extends JsonResource
             'id' => $this->getResourceIdentifier(),
             'institution' => $this->getInstitutionName(),
             'institution_meta' => $this->getInstitutionMeta(),
-            'accounts' => Account::collection($this->whenLoaded('accounts'))
+            'accounts' => Account::collection($this->whenLoaded('accounts')),
+            'deletable' => $this->canDelete()
         ];
 
         return $output;

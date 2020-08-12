@@ -27,7 +27,7 @@
                         "/></template
             ></TransactionsTable>
         </v-col>
-        <v-col v-if="isAdmin" cols="12">
+        <v-col v-if="isAdmin && account.item.deletable" cols="12">
             <v-card>
                 <v-card-title
                     >Settings <v-spacer />
