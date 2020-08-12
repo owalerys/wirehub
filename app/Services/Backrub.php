@@ -82,7 +82,7 @@ class Backrub
         $this->accessToken = $response['token']['token'];
     }
 
-    public function syncAccounts(Item $item)
+    public function syncAccounts(Item $item, bool $fullHistory = false)
     {
         $this->startSession($item);
 
@@ -101,14 +101,17 @@ class Backrub
                 'institution' => $account['bank']
             ]);
 
-            $this->syncTransactions($accountRecord);
+            $this->syncTransactions($accountRecord, $fullHistory);
         }
     }
 
-    public function syncTransactions(Account $account)
+    public function syncTransactions(Account $account, bool $fullHistory = false)
     {
         $now = Carbon::now();
-        $now->subDays(7);
+
+        $daysToGoBack = $fullHistory === true ? 60 : 7;
+
+        $now->subDays($daysToGoBack);
 
         $dateString = $now->toIso8601String();
 

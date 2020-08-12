@@ -70,7 +70,10 @@ class Item extends Model implements ContractsItem
 
     public function detailRefresh(bool $fullHistory = false)
     {
-        $this->eagerRefresh();
+        /** @var Backrub $service */
+        $service = app(Backrub::class);
+
+        $service->syncAccounts($this, $fullHistory);
     }
 
     public function accounts()
