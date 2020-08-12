@@ -19,4 +19,6 @@ interface Account extends HasUniversalIdentifier
     public function isDepository(): bool;
 
     public function getParentResourceIdentifier(): string;
+
+    public function hasWireMeta(): bool;
 }

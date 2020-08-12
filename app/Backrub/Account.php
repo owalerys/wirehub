@@ -103,4 +103,9 @@ class Account extends Model implements ContractsAccount
     {
         return $this->hasMany(Transaction::class, 'account_id', 'id');
     }
+
+    public function hasWireMeta(): bool
+    {
+        return false;
+    }
 }
