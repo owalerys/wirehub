@@ -75,7 +75,7 @@ class NewTransaction extends Notification
         $message->line("Currency: $currency");
         $message->line("Amount: $amount");
 
-        if ($pending !== null) $message->line("Pending: " . $pending ? 'YES' : 'NO');
+        if ($pending !== null) $message->line("Pending: " . ($pending ? 'PENDING' : 'SETTLED'));
 
         if ($hasWireMeta) {
             $receiverReference = $wireMeta->receiver->reference_number;
