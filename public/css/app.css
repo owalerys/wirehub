@@ -4547,6 +4547,16 @@ input[type=button].btn-block {
   font-size: 1.125rem;
   line-height: inherit;
   white-space: nowrap;
+
+  box-sizing: border-box;
+  color: #535353;
+  font-family: "Open Sans", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  line-height: 28px;
+  text-rendering: optimizelegibility;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .navbar-brand:hover,

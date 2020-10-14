@@ -44,7 +44,7 @@ class UserPasswordReset extends Notification
         return (new MailMessage)
                     ->line('You requested a password reset for your account; use the link below within 24 hours to continue.')
                     ->action('Reset Password', url(config('app.url').route('password.reset', $this->token, false)))
-                    ->line('Thank you for using WireHub.');
+                    ->line('Thank you for using ' . config('app.name') . '.');
     }
 
     /**

@@ -1,5 +1,37 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,400;1,600&display=swap');
 
 // Variables
 @import 'variables';
+
+// Bootstrap
+@import '../../node_modules/bootstrap/scss/bootstrap.scss';
+
+.navbar-brand.wh-container {
+    display: flex;
+    align-items: center;
+}
+
+.wh-branding {
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+    caret-color: #535353;
+    color: #535353;
+    font-family: "Open Sans", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.35px;
+    line-height: 28px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 4px;
+    text-rendering: optimizelegibility;
+    -moz-osx-font-smoothing: grayscale
+}

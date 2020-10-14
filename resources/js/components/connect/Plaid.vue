@@ -12,7 +12,7 @@ export default {
     methods: {
         initializeLink() {
             this.linkHandler = Plaid.create({
-                clientName: "WireHub",
+                clientName: process.env.MIX_APP_NAME,
                 env: process.env.MIX_PLAID_ENV,
                 apiVersion: "v2",
                 key: process.env.MIX_PLAID_PUBLIC_KEY,

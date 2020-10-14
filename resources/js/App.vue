@@ -6,7 +6,7 @@
                 <img class="logo" src="/dist/img/logo-bolt.png" />
                 <div class="flex flex-col items-end">
                     <span class="title ml-1 mt-3 white--text open-sans font-bold"
-                        ><i>WireHub</i></span
+                        ><i>{{ appName }}</i></span
                     >
                     <span class="font-weight-light white--text open-sans subtext font-semibold"><i>{{ isAdmin ? 'Admin' : 'Merchant' }}</i></span>
                 </div>
@@ -33,6 +33,8 @@ import { mapActions, mapGetters } from "vuex";
 
 import Navigation from "./components/Navigation";
 
+const APP_NAME = process.env.MIX_APP_NAME;
+
 export default {
     components: {
         Navigation
@@ -44,6 +46,9 @@ export default {
         drawer: null
     }),
     computed: {
+        appName() {
+            return APP_NAME
+        },
         ...mapGetters("user", ["isAdmin"]),
     },
     methods: {

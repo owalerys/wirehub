@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Wirehub') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -17,14 +17,15 @@
     <script src="{{ mix('dist/js/front.js') }}"></script>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}" alt="{{ config('app.name', 'Laravel') }}">
-                    <img src="/dist/img/logo.png" style="height: 32px;" />
+                <a class="navbar-brand wh-container" href="{{ url('/') }}" alt="{{ config('app.name', 'Wirehub') }}">
+                    <img src="/dist/img/logo-bolt.png" style="height: 32px;" />
+                    <span class="wh-branding">{{ config('app.name', 'Wirehub') }}</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
