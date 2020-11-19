@@ -148,6 +148,7 @@ class Transaction extends Model implements ContractsTransaction
             $query->where('description', 'like', '%wire%');
             $query->orWhere('description', 'like', '%transfer%');
             $query->orWhere('description', 'like', '%trnsfr%');
+            $query->orWhere('description', 'like', '% tfr %');
             $query->orWhere('description', 'like', '%deposit%');
             $query->orWhere('description', 'like', '%cheque%');
             $query->orWhere('code', '=', 'CK');
