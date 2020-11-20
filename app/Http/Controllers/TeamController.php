@@ -49,4 +49,21 @@ class TeamController extends Controller
 
         return response()->json(['team' => $team, 'owner' => $owner]);
     }
+
+    public function resendInvite(int $teamId, ServicesTeam $service)
+    {
+        $team = Team::find($teamId);
+
+        if (!$team) return abort(404);
+
+        Gate::authorize('view-team', $team);
+
+        $team->load('users');
+
+        $user = $team->users->first();
+
+        $service->inviteMember($user, $team);
+
+        return response()->json(new ResourcesTeam($team));
+    }
 }

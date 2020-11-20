@@ -48,17 +48,59 @@
                 >Change Merchant</v-btn
             >
             <v-spacer />
+            <v-btn
+                text
+                v-if="!loading && invite"
+                color="primary"
+                @click="resendInvite"
+                :loading="requestLoading"
+                >Re-send Invite</v-btn
+            >
+            <v-snackbar v-model="requestFailed" :timeout="2000">
+                The invite e-mail failed to send.
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="blue"
+                        text
+                        v-bind="attrs"
+                        @click="resendInvite"
+                    >
+                        Re-Try
+                    </v-btn>
+                </template>
+            </v-snackbar>
         </v-card-actions>
     </v-card>
 </template>
 
 <script>
+import api from "../../api";
+
 export default {
-    props: ['loading', 'label', 'team', 'manager', 'actions'],
+    data() {
+        return {
+            requestLoading: false,
+            requestFailed: false
+        };
+    },
+    props: ["loading", "label", "team", "manager", "actions", "invite"],
     methods: {
         change() {
-            this.$emit('change')
+            this.$emit("change");
+        },
+        async resendInvite() {
+            this.requestFailed = false;
+            this.requestLoading = true;
+            try {
+                const response = await api.post(
+                    `/teams/${this.team.id}/resend-invite`
+                );
+            } catch (e) {
+                this.requestFailed = true;
+            } finally {
+                this.requestLoading = false;
+            }
         }
     }
-}
+};
 </script>

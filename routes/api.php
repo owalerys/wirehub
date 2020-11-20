@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/teams', 'TeamController@getTeams');
     Route::get('/teams/{teamId}', 'TeamController@getTeam');
     Route::post('/teams', 'TeamController@createTeam');
+    Route::post('/teams/{teamId}/resend-invite', 'TeamController@resendInvite');
 
     Route::put('/transactions/{transactionId}/confirm', 'TransactionController@confirm');
 

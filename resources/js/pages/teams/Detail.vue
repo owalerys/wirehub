@@ -1,7 +1,7 @@
 <template>
     <v-row justify="start" align="start">
         <v-col cols="6">
-            <TeamCard label="Merchant" :team="team" :loading="loading" :manager="manager" />
+            <TeamCard label="Merchant" :team="team" :loading="loading" :manager="manager" :invite="true" />
         </v-col>
         <v-col cols="12">
             <AccountsTable :accounts="accounts" :loading="loading" :per-page="5" />

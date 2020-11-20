@@ -5,9 +5,10 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+                <div class="card-header">{{ __(isset($_GET['email']) ? 'Welcome to ' . config('app.name') . '!' : 'Reset Password') }}</div>
 
                 <div class="card-body">
+                    @if(isset($_GET['email']))<p>Choose your account's password below to create your account:</p>@endif
                     <form method="POST" action="{{ route('password.update') }}">
                         @csrf
 
