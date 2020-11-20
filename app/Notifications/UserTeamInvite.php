@@ -48,7 +48,7 @@ class UserTeamInvite extends Notification
             ->subject('Welcome to ' . config('app.name'))
             ->line('You\'ve been invited to join the ' . $this->team->name . ' team.')
             ->line('Use the following link to activate your account within 24 hours.')
-            ->action('Activate Account', url(config('app.url') . route('password.reset', $this->token, false)))
+            ->action('Activate Account', url(config('app.url') . route('password.reset', $this->token, false)) . '?email=' . $notifiable->email)
             ->line('Thank you for using ' . config('app.name') . '.');
     }
 
