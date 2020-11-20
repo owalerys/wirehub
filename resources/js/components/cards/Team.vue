@@ -56,16 +56,29 @@
                 :loading="requestLoading"
                 >Re-send Invite</v-btn
             >
-            <v-snackbar v-model="requestFailed" :timeout="2000">
-                The invite e-mail failed to send.
+            <v-snackbar v-model="requestFailed" :timeout="5000">
+                Failed to send the invite e-mail.
                 <template v-slot:action="{ attrs }">
                     <v-btn
-                        color="blue"
+                        color="red"
                         text
                         v-bind="attrs"
                         @click="resendInvite"
                     >
                         Re-Try
+                    </v-btn>
+                </template>
+            </v-snackbar>
+            <v-snackbar v-model="requestSucceeded" :timeout="5000">
+                The invite e-mail was sent.
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="blue"
+                        text
+                        v-bind="attrs"
+                        @click="requestSucceeded = false"
+                    >
+                        Close
                     </v-btn>
                 </template>
             </v-snackbar>
@@ -80,7 +93,8 @@ export default {
     data() {
         return {
             requestLoading: false,
-            requestFailed: false
+            requestFailed: false,
+            requestSucceeded: false,
         };
     },
     props: ["loading", "label", "team", "manager", "actions", "invite"],
@@ -90,11 +104,13 @@ export default {
         },
         async resendInvite() {
             this.requestFailed = false;
+            this.requestSucceeded = false;
             this.requestLoading = true;
             try {
                 const response = await api.post(
                     `/teams/${this.team.id}/resend-invite`
                 );
+                this.requestSucceeded = true;
             } catch (e) {
                 this.requestFailed = true;
             } finally {
