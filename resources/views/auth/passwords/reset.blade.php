@@ -19,6 +19,7 @@
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ isset($_GET['email']) ? $_GET['email'] : ($email ?? old('email')) }}" required autocomplete="email" autofocus {{ isset($_GET['email']) ? 'disabled' : '' }}>
+                                @if(isset($_GET['email']))<input name="email" type="hidden" value="{{ $_GET['email'] }}"> @endif
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
