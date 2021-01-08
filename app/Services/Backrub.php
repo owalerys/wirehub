@@ -122,7 +122,7 @@ class Backrub
 
         if (!$response->successful()) $this->handleError($response);
 
-        $transactions = $response['transaction'];
+        $transactions = isset($response['transaction']) ? $response['transaction'] : [];
 
         foreach ($transactions as $transaction) {
             $transactionRecord = Transaction::updateOrCreate([
