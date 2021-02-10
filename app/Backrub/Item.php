@@ -65,7 +65,7 @@ class Item extends Model implements ContractsItem
      */
     public function summaryRefresh()
     {
-        $this->eagerRefresh();
+        return;
     }
 
     public function detailRefresh(bool $fullHistory = false)

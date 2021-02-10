@@ -12,7 +12,7 @@ class CreateBackrubItem extends Command
      *
      * @var string
      */
-    protected $signature = 'backrub:create-item {username} {password}';
+    protected $signature = 'backrub:create-item {username}';
 
     /**
      * The console command description.
@@ -38,7 +38,7 @@ class CreateBackrubItem extends Command
      */
     public function handle(Backrub $service)
     {
-        $item = $service->connectItem($this->argument('username'), $this->argument('password'));
+        $item = $service->connectItem($this->argument('username'));
 
         var_dump($item);
     }

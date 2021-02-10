@@ -6,139 +6,92 @@ use App\Backrub\Account;
 use App\Backrub\Item;
 use App\Backrub\Transaction;
 use Carbon\Carbon;
-use Error;
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Http;
+use Symfony\Component\Process\Process;
 
 class Backrub
 {
-    /** @property string $accessToken */
-    private $accessToken;
 
-    /** @property Item $item */
-    private $item;
-
-    private function getClient()
+    public function connectItem(string $username): Item
     {
-        $client = Http::withOptions([
-            'base_uri' => $this->getBaseUrl() . '/api/'
-        ]);
-
-        if ($this->accessToken) {
-            $client = $client->withHeaders([
-                'Access-Token' => $this->accessToken
-            ]);
-        }
-
-        return $client;
-    }
-
-    private function getBaseUrl()
-    {
-        return env('BACKRUB_API_BASE');
-    }
-
-    private function handleError(Response $response)
-    {
-        throw new \Exception($response);
-    }
-
-    public function connectItem(string $username, string $password): Item
-    {
-        $params = [
-            'username' => $username,
-            'password' => $password
-        ];
-
-        $response = $this->getClient()->asForm()->post('authenticate', $params);
-
-        if (!$response->successful() || $response['invalid'] === true) throw new Error($response);
+        $password = $username;
 
         $item = Item::updateOrCreate([
-            'external_id' => $response['user']['id'],
-            'username' => $username
+            'username' => $username,
+            'external_id' => 0,
         ], [
             'password' => Crypt::encrypt($password),
-            'name' => $response['user']['name']
+            'name' => $username,
+        ]);
+
+        $account = Account::updateOrCreate([
+            'item_id' => $item->id,
+            'external_id' => 0,
+        ], [
+            'name' => env('SCRAPER_BMO_CUSTOMER_ID'),
+            'institution' => 'BMO'
         ]);
 
         return $item;
     }
 
-    public function startSession(Item $item)
-    {
-        $params = [
-            'username' => $item->username,
-            'password' => Crypt::decrypt($item->password)
-        ];
-
-        $response = $this->getClient()->asForm()->post('authenticate', $params);
-
-        if (!$response->successful() || $response['invalid'] === true) $this->handleError($response);
-
-        $this->item = $item;
-
-        $this->accessToken = $response['token']['token'];
-    }
-
     public function syncAccounts(Item $item, bool $fullHistory = false)
     {
-        $this->startSession($item);
-
-        $response = $this->getClient()->get('bankAccount');
-
-        if (!$response->successful()) $this->handleError($response);
-
-        $accounts = $response['bankAccount'];
+        $accounts = $item->accounts;
 
         foreach ($accounts as $account) {
-            $accountRecord = Account::updateOrCreate([
-                'external_id' => $account['id'],
-                'item_id' => $item->id
-            ], [
-                'name' => $account['customerId'],
-                'institution' => $account['bank']
-            ]);
-
-            $this->syncTransactions($accountRecord, $fullHistory);
+            $this->syncTransactions($account, $fullHistory);
         }
     }
 
     public function syncTransactions(Account $account, bool $fullHistory = false)
     {
-        $now = Carbon::now();
+        $output = $this->runScrape();
 
-        $daysToGoBack = $fullHistory === true ? 60 : 7;
+        $total = count($output['transactionSummary']);
 
-        $now->subDays($daysToGoBack);
+        for ($i = 0; $i < $total; $i++) {
+            $transactionSummary = $output['transactionSummary'][$i];
+            $transactionDetail = $output['transactionDetail'][$i];
 
-        $dateString = $now->toIso8601String();
-
-        $response = $this->getClient()->get('transaction', [
-            'transaction.bankAccountId' => $account->external_id,
-            'transaction.postedAt' => ">$dateString"
-        ]);
-
-        if (!$response->successful()) $this->handleError($response);
-
-        $transactions = isset($response['transaction']) ? $response['transaction'] : [];
-
-        foreach ($transactions as $transaction) {
             $transactionRecord = Transaction::updateOrCreate([
-                'external_id' => $transaction['id'],
+                'sender_reference_number' => $transactionDetail['sendersReference'],
+                'receiver_reference_number' => $transactionDetail['referenceNumber'],
                 'account_id' => $account->id
             ], [
-                'sender_reference_number' => $transaction['senderReferenceNumber'],
-                'amount' => $transaction['amount'],
-                'sender_address' => $transaction['senderAddress'],
-                'sender_name' => $transaction['senderName'],
-                'receiver_bank_account_number' => $transaction['receiverBankAccountNumber'],
-                'receiver_reference_number' => $transaction['receiverReferenceNumber'],
-                'date' => new Carbon($transaction['postedAt']),
-                'receiver_name' => $transaction['receiverName'],
-                'currency' => $transaction['currency'],
+                'external_id' => 0,
+                'amount' => str_replace(',', '', $transactionSummary['amount']),
+                'sender_address' => $transactionDetail['orderingCustomerAddress'],
+                'sender_name' => $transactionSummary['orderingCustomerName'],
+                'receiver_bank_account_number' => $transactionSummary['beneficiaryAccountNumber'],
+                'date' => new Carbon($transactionDetail['postedAt']),
+                'receiver_name' => $transactionSummary['beneficiaryName'],
+                'currency' => $transactionSummary['currency'],
             ]);
         }
+    }
+
+    private function runScrape(): array
+    {
+        $process = new Process(['node', 'scrape/bmo.js']);
+        $process->setTimeout(120);
+
+        $exitCode = $process->run();
+
+        $output = $process->getOutput();
+
+        if ($exitCode > 0) {
+            throw new \Exception('Scraper failed: ' . $output);
+        }
+
+        $decoded = json_decode($output, true);
+
+        $summaryCount = count($decoded['transactionSummary']);
+        $detailCount = count($decoded['transactionDetail']);
+        if ($summaryCount === 0 || $summaryCount !== $detailCount) {
+            throw new \Exception('[' . $summaryCount . ', ' . $detailCount . '] results came back from scraper run. ' . $output);
+        }
+
+        return $decoded;
     }
 }
