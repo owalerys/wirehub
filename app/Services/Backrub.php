@@ -74,7 +74,8 @@ class Backrub
     private function runScrape(): array
     {
         $process = new Process(['node', 'scrape/bmo.js']);
-        $process->setTimeout(120);
+        // Set a generous timeout of 4 mins because this process can run quite long on a cheap prod server...
+        $process->setTimeout(240);
 
         $exitCode = $process->run();
 
