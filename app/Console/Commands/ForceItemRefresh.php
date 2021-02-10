@@ -14,7 +14,7 @@ class ForceItemRefresh extends Command
      *
      * @var string
      */
-    protected $signature = 'items:force';
+    protected $signature = 'items:force {itemId?}';
 
     /**
      * The console command description.
@@ -40,7 +40,11 @@ class ForceItemRefresh extends Command
      */
     public function handle(Discovery $service)
     {
-        $items = $service->getAllItemsForRefresh();
+        if ($itemId = $this->argument('itemId')) {
+            $items = [$service->identifyItem($itemId)];
+        } else {
+            $items = $service->getAllItemsForRefresh();
+        }
 
         foreach ($items as $item) {
             $this->info('Updating ' . $item->getResourceIdentifier());
