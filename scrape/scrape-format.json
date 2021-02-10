@@ -1,0 +1,49 @@
+{
+    "transactionSummary": [
+        {
+            "valueDate": "2021-02-10",
+            "orderingCustomerName": "DAVID L PETTUS",
+            "amount": "5,700.00",
+            "currency": "USD",
+            "beneficiaryAccountNumber": "02834776970",
+            "beneficiaryName": "93485464 QUEBEC INC"
+        },
+        {
+            "valueDate": "2021-02-08",
+            "orderingCustomerName": "STEVEN M KING",
+            "amount": "1,008.23",
+            "currency": "USD",
+            "beneficiaryAccountNumber": "02834776970",
+            "beneficiaryName": "93485464 QUEBEC INC"
+        }
+    ],
+    "transactionDetail": [
+        {
+            "wireType": "Commercial",
+            "status": "Confirmed",
+            "postedAt": "2021-02-10 09:59:31 EST",
+            "detailsOfCharges": "BEN - Additional routing charges will be paid by the beneficiary",
+            "referenceNumber": "210210019224000",
+            "paymentDetails": "APPLY TO DAVID PETTUS ACCOUNT",
+            "sendersReference": "F60210180518000",
+            "senderToReceiverInformation": "/CCT/",
+            "orderingCustomerAddress": "7614 RAES CREEK DR SPRING TX 773894373 US",
+            "orderingBankId": "WFBIUS6SXXX",
+            "orderingBankIdType": "SWIFT",
+            "beneficiaryAddress": "800 DE LA GAUCHETIERE SUITE 5600 MONTREAL H5A 1K8 CA"
+        },
+        {
+            "wireType": "Commercial",
+            "status": "Confirmed",
+            "postedAt": "2021-02-08 15:37:04 EST",
+            "detailsOfCharges": "BEN - Additional routing charges will be paid by the beneficiary",
+            "referenceNumber": "210208039631000",
+            "sendersReference": "F60208294516000",
+            "senderToReceiverInformation": "/CCT/",
+            "orderingCustomerAddress": "5214 CONTOUR PL HOUSTON TX 770964118 US",
+            "orderingBankId": "WFBIUS6SXXX",
+            "orderingBankIdType": "SWIFT",
+            "beneficiaryAddress": "800 DE LA GAUCHETIERE SUITE 5600 MONTREAL H5A 1K8 CA"
+        }
+    ]
+}
