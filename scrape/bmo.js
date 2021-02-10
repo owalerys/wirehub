@@ -228,6 +228,7 @@ const log = (...val) => {
         return result;
     }
 
+    log("launching browser");
     let browser = await puppeteer.launch({
         slowMo: 75,
         headless: true,
@@ -238,8 +239,11 @@ const log = (...val) => {
         ]
     });
 
+    log("opening page");
     let page = await browser.newPage();
+    log("authentication proxy");
     await page.authenticate({ username: proxyUser, password: proxyPass });
+    log("disabling cache");
     await page.setCacheEnabled(false);
 
     let reportPage = null;
@@ -248,8 +252,10 @@ const log = (...val) => {
     page.setDefaultTimeout(120000);
     await page.setViewport({ width: 1280, height: 800 });
 
+    log("Navigating to BMO...");
     await page.goto("https://www21.bmo.com", { waitUntil: "networkidle0" });
-    await page.waitForSelector("form#loginFormID input#customerId");
+    log("Waiting for selector");
+    await page.waitForSelector("form#loginFormID input#customerId", { timeout: 30000 });
     log("typing credentials");
     await page.type("input#customerId", conf.customerId);
     await page.type("input#userId", conf.userId);
