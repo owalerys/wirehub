@@ -36,8 +36,6 @@ class UpdateItem implements ShouldQueue
     {
         try {
             $this->item->summaryRefresh();
-
-            $this->delete();
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
             $this->fail($e);

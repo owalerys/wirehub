@@ -39,8 +39,6 @@ class UpdateTransactions implements ShouldQueue
     {
         try {
             $this->item->detailRefresh($this->fullHistory);
-
-            $this->delete();
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
             $this->fail($e);

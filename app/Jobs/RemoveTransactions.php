@@ -33,7 +33,5 @@ class RemoveTransactions implements ShouldQueue
     public function handle(Plaid $service)
     {
         $service->removeTransactions($this->transactionIds);
-
-        $this->delete();
     }
 }

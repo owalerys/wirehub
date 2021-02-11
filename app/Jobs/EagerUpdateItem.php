@@ -38,8 +38,6 @@ class EagerUpdateItem implements ShouldQueue
     {
         try {
             $this->item->eagerRefresh();
-
-            $this->delete();
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
             $this->fail($e);
