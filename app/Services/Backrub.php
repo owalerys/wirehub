@@ -75,7 +75,7 @@ class Backrub
     {
         $process = new Process(['node', 'scrape/bmo.js']);
         // Set a generous timeout of 4 mins because this process can run quite long on a cheap prod server...
-        $process->setTimeout(240);
+        $process->setTimeout(60 * 10);
 
         $exitCode = $process->run();
 

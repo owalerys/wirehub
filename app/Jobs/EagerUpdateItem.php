@@ -17,7 +17,7 @@ class EagerUpdateItem implements ShouldQueue
     /** @property App\Contracts\Item $item */
     protected $item;
 
-    public $timeout = 240;
+    public $timeout = 60 * 10;
 
     /**
      * Create a new job instance.
