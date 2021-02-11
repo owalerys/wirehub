@@ -19,6 +19,10 @@ class EagerUpdateItem implements ShouldQueue
 
     public $timeout = 60 * 10;
 
+    public $maxExceptions = 1;
+
+    public $tries = 1;
+
     /**
      * Create a new job instance.
      *
