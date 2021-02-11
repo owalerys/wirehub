@@ -77,11 +77,11 @@ class Backrub
         // Set a generous timeout of 4 mins because this process can run quite long on a cheap prod server...
         $process->setTimeout(60 * 10);
 
-        $exitCode = $process->run();
+        $process->run();
 
         $output = $process->getOutput();
 
-        if ($exitCode > 0) {
+        if ($process->isSuccessful() === false) {
             $errorOutput = $process->getErrorOutput();
             throw new \Exception('Scraper failed: ' . $errorOutput);
         }
