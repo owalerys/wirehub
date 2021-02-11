@@ -82,7 +82,8 @@ class Backrub
         $output = $process->getOutput();
 
         if ($exitCode > 0) {
-            throw new \Exception('Scraper failed: ' . $output);
+            $errorOutput = $process->getErrorOutput();
+            throw new \Exception('Scraper failed: ' . $errorOutput);
         }
 
         $decoded = json_decode($output, true);
