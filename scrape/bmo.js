@@ -237,7 +237,7 @@ const errorLog = (...val) => {
     log("launching browser");
     let browser = await puppeteer.launch({
         slowMo: 75,
-        headless: true,
+        headless: process.env.SCRAPER_HEADFUL ? false : true,
         args: [
             "--no-sandbox",
             "--disable-setuid-sandbox",
