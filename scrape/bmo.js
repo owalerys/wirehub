@@ -1,4 +1,7 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+puppeteer.use(StealthPlugin());
+
 require("dotenv").config();
 
 const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -26,7 +29,7 @@ const log = (...val) => {
 
 const errorLog = (...val) => {
     console.error("[ERROR]: ", ...val);
-}
+};
 
 (async () => {
     async function scrape(page) {
@@ -288,7 +291,7 @@ const errorLog = (...val) => {
         log("continue button is there");
         await page.click("button.sign-in-btn");
     } else if (!continueBtn.select && continueBtn.btn) {
-        errorLog("Sign-In Failure:", errorMessage || '');
+        errorLog("Sign-In Failure:", errorMessage || "");
         process.exit(1);
     } else log("no continue btn found");
 
