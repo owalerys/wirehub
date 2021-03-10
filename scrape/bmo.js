@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-// const fs = require('fs');
 require("dotenv").config();
 
 const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -16,7 +15,7 @@ var proxyUser = process.env.SCRAPER_PROXY_USER;
 var proxyPass = process.env.SCRAPER_PROXY_PASS;
 
 process.on("uncaughtException", function(err) {
-    log("Caught exception: " + err);
+    errorLog("Caught exception: " + err);
 });
 
 const verbose = process.argv.includes("--verbose");
