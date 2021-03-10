@@ -25,6 +25,10 @@ const log = (...val) => {
     if (verbose) console.log("[LOGGER]: ", ...val);
 };
 
+const errorLog = (...val) => {
+    console.error("[ERROR]: ", ...val);
+}
+
 (async () => {
     async function scrape(page) {
         let results = await page.evaluate(() => {
@@ -255,7 +259,9 @@ const log = (...val) => {
     log("Navigating to BMO...");
     await page.goto("https://www21.bmo.com", { waitUntil: "networkidle0" });
     log("Waiting for selector");
-    await page.waitForSelector("form#loginFormID input#customerId", { timeout: 30000 });
+    await page.waitForSelector("form#loginFormID input#customerId", {
+        timeout: 30000
+    });
     log("typing credentials");
     await page.type("input#customerId", conf.customerId);
     await page.type("input#userId", conf.userId);
@@ -263,6 +269,7 @@ const log = (...val) => {
 
     log("clicking sign-in");
 
+    await snooze(1000);
     await page.click("button.sign-in-btn");
     await snooze(10000);
 
@@ -273,10 +280,16 @@ const log = (...val) => {
         };
     });
 
+    let errorMessage = await page.evaluate(() => {
+        const el = document.querySelector("span#genericError");
+        return el ? el.innerHTML : "";
+    });
+
     if (continueBtn.select && continueBtn.btn) {
         log("continue button is there");
         await page.click("button.sign-in-btn");
     } else if (!continueBtn.select && continueBtn.btn) {
+        errorLog("Sign-In Failure:", errorMessage || '');
         process.exit(1);
     } else log("no continue btn found");
 
@@ -346,6 +359,6 @@ const log = (...val) => {
     );
     console.log(resultsStr);
 })().catch(function(error) {
-    console.error(error);
+    errorLog(error);
     process.exit(1);
 });
