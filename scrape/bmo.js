@@ -1,5 +1,7 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+const path = require('path');
+
 puppeteer.use(StealthPlugin());
 
 require("dotenv").config();
@@ -162,10 +164,10 @@ const errorLog = (...val) => {
     async function scrapeReport(page, label) {
         log("selecting date range[" + label + "]");
         // click on date range selector combobox
-        await page.click(
+        page.click(
             "div.search-results div[aria-label='Incoming Wire Payments Report'] div.dateRange input[role='combobox']"
         );
-        await snooze(500);
+        await snooze(1500);
 
         // click on last 3 days
         await page.evaluate(label => {
@@ -175,7 +177,7 @@ const errorLog = (...val) => {
                 "']";
             document.querySelector(selector).click();
         }, label);
-        await snooze(500);
+        await snooze(1500);
 
         log("clicking on generate");
 
@@ -185,10 +187,10 @@ const errorLog = (...val) => {
 
         let pages = await browser.pages();
 
-        await page.click(
+        page.click(
             "button.bmo-btn-large[aria-label='Generate Incoming Wire Payments Report']"
         );
-        await snooze(1000);
+        await snooze(3000);
 
         pages = await browser.pages();
 
@@ -220,7 +222,7 @@ const errorLog = (...val) => {
 
         if (totalPages > 1) {
             for (let i = 0; i < totalPages; i++) {
-                await reportPage.click("button[name='nextPage']");
+                reportPage.click("button[name='nextPage']");
                 await snooze(2000);
             }
         }
@@ -237,20 +239,22 @@ const errorLog = (...val) => {
     log("launching browser");
     let browser = await puppeteer.launch({
         slowMo: 75,
-        headless: process.env.SCRAPER_HEADFUL ? false : true,
+        headless: true,
         args: [
             "--no-sandbox",
             "--disable-setuid-sandbox",
             "--proxy-server=http://" + proxyHost + ":" + proxyPort
-        ]
+        ],
+        userDataDir: path.join(process.cwd(), process.env.SCRAPER_BROWSER_DATA)
     });
 
     log("opening page");
     let page = await browser.newPage();
+    await snooze(10000);
     log("authentication proxy");
     await page.authenticate({ username: proxyUser, password: proxyPass });
     log("disabling cache");
-    await page.setCacheEnabled(false);
+    // await page.setCacheEnabled(false);
 
     let reportPage = null;
 
@@ -265,55 +269,66 @@ const errorLog = (...val) => {
         timeout: 30000
     });
     log("typing credentials");
+    log("type cId");
     await page.type("input#customerId", conf.customerId);
+    log("type uId");
     await page.type("input#userId", conf.userId);
+    log("type pass");
     await page.type("input#loginPassword", conf.password);
 
     log("clicking sign-in");
 
-    await snooze(1000);
-    await page.click("button.sign-in-btn");
+    await snooze(2000);
+    // Let's try not waiting for this to complete
+    page.click("button.sign-in-btn");
     await snooze(10000);
 
+    log("evaluation sign in continue button");
     let continueBtn = await page.evaluate(() => {
         return {
             btn: document.querySelector("button.sign-in-btn"),
             select: document.querySelector("select#sessionOverRide")
         };
     });
+    log(continueBtn);
 
+    log("evaluating error msg");
     let errorMessage = await page.evaluate(() => {
         const el = document.querySelector("span#genericError");
         return el ? el.innerHTML : "";
     });
+    log(errorMessage);
 
     if (continueBtn.select && continueBtn.btn) {
         log("continue button is there");
-        await page.click("button.sign-in-btn");
+        page.click("button.sign-in-btn");
     } else if (!continueBtn.select && continueBtn.btn) {
         errorLog("Sign-In Failure:", errorMessage || "");
         process.exit(1);
     } else log("no continue btn found");
 
     // wait main page to render
+    log("waiting for account balances table");
     await page.waitForSelector("table.account-balances");
 
+    log("pausing for 5 seconds");
     await snooze(5000);
 
+    log("checking for pop up");
     let popUp = await page.evaluate(() => {
         return { btn: document.querySelector("button[aria-label='close']") };
     });
 
     if (popUp.btn) {
         log("popup is there");
-        await page.click("button[aria-label='close']");
+        page.click("button[aria-label='close']");
         await snooze(2000);
     } else log("no popup found");
 
     log("clicking on wire reports");
 
     // click on "Payments & Receivables"
-    await page.click("li#paymentsMenu > a");
+    page.click("li#paymentsMenu > a");
 
     // wait for rendering
     await page.waitForSelector(
@@ -321,7 +336,7 @@ const errorLog = (...val) => {
     );
 
     // click on "Wire Payment / Reports"
-    await page.click(
+    page.click(
         "div#payment div.popover-main-cont div.menu-item-section div.col-md-3:nth-of-type(1) ul > li:nth-of-type(1)"
     );
 
@@ -331,7 +346,7 @@ const errorLog = (...val) => {
         "div.search-results div[aria-label='Incoming Wire Payments Report'] div.dateRange input[role='combobox']"
     );
 
-    let resultLastDays = await scrapeReport(page, "Last 3 days");
+    let resultLastDays = await scrapeReport(page, "Last 14 days");
     let resultToday = await scrapeReport(page, "Current day");
 
     let results = {
@@ -345,8 +360,8 @@ const errorLog = (...val) => {
 
     await snooze(100);
 
-    await page.click("li.signout-option > a");
-    await snooze(3000);
+    page.click("li.signout-option > a");
+    await snooze(6000);
     await page.close();
     await browser.close();
 
