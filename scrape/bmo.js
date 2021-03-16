@@ -237,6 +237,8 @@ const errorLog = (...val) => {
     }
 
     log("launching browser");
+    const userDataDir = path.join(process.cwd(), process.env.SCRAPER_BROWSER_DATA);
+    log("user data dir: " + userDataDir);
     let browser = await puppeteer.launch({
         slowMo: 75,
         headless: true,
@@ -245,7 +247,7 @@ const errorLog = (...val) => {
             "--disable-setuid-sandbox",
             "--proxy-server=http://" + proxyHost + ":" + proxyPort
         ],
-        userDataDir: path.join(process.cwd(), process.env.SCRAPER_BROWSER_DATA)
+        userDataDir
     });
 
     log("opening page");
