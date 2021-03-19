@@ -1,11 +1,4 @@
 const puppeteer = require("puppeteer-extra");
-// const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const path = require('path');
-
-// puppeteer.use(StealthPlugin());
-
-// docker run -p 3000:3000 -e HEADLESS='false' -e MAX_POOL_SIZE=3 -e PROXY_HOST=uk.secureconnect.me -e PROXY_PORT=6060 oollii
-// docker build -t oollii .
 
 require("dotenv").config();
 
@@ -240,8 +233,6 @@ const errorLog = (...val) => {
     }
 
     log("launching browser");
-    const userDataDir = path.join(process.cwd(), process.env.SCRAPER_BROWSER_DATA);
-    // log("user data dir: " + userDataDir);
     let browser = await puppeteer.connect({
         slowMo: 75,
         browserWSEndpoint: "ws://127.0.0.1:3000/"
