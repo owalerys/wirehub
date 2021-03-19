@@ -240,11 +240,11 @@ const errorLog = (...val) => {
 
     log("opening page");
     let page = await browser.newPage();
-    // await snooze(10000);
+    await snooze(1000);
     log("authentication proxy");
     await page.authenticate({ username: proxyUser, password: proxyPass });
     log("disabling cache");
-    // await page.setCacheEnabled(false);
+    await page.setCacheEnabled(false);
 
     let reportPage = null;
 
