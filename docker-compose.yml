@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  finch:
+    image: finch:latest
+    ports:
+      - "3000:3000"
+    env_file: ./.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      rollback_config:
+        parallelism: 0
+        order: start-first
+      update_config:
+        parallelism: 0
+        failure_action: rollback
+        order: start-first
+
