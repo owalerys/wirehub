@@ -5,7 +5,9 @@ services:
     build:
       context: ./finch
     ports:
-      - "3000:3000"
+      - target: 3000
+        published: 3000
+        mode: host
     env_file: ./.env
     deploy:
       restart_policy:
@@ -20,4 +22,6 @@ services:
         parallelism: 0
         failure_action: rollback
         order: start-first
+      mode: replicated
+      replicas: 1
 
