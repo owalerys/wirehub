@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "downlevelIteration": true,
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "lib": [
+      "dom",
+      "es7"
+    ],
+    "target": "es2017"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

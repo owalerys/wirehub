@@ -1,8 +1,11 @@
 const puppeteer = require("puppeteer-extra");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+// const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const path = require('path');
 
-puppeteer.use(StealthPlugin());
+// puppeteer.use(StealthPlugin());
+
+// docker run -p 3000:3000 -e HEADLESS='false' -e MAX_POOL_SIZE=3 -e PROXY_HOST=uk.secureconnect.me -e PROXY_PORT=6060 oollii
+// docker build -t oollii .
 
 require("dotenv").config();
 
@@ -238,21 +241,15 @@ const errorLog = (...val) => {
 
     log("launching browser");
     const userDataDir = path.join(process.cwd(), process.env.SCRAPER_BROWSER_DATA);
-    log("user data dir: " + userDataDir);
-    let browser = await puppeteer.launch({
+    // log("user data dir: " + userDataDir);
+    let browser = await puppeteer.connect({
         slowMo: 75,
-        headless: true,
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--proxy-server=http://" + proxyHost + ":" + proxyPort
-        ],
-        userDataDir
+        browserWSEndpoint: "ws://127.0.0.1:3000/"
     });
 
     log("opening page");
     let page = await browser.newPage();
-    await snooze(10000);
+    // await snooze(10000);
     log("authentication proxy");
     await page.authenticate({ username: proxyUser, password: proxyPass });
     log("disabling cache");
@@ -282,7 +279,9 @@ const errorLog = (...val) => {
 
     await snooze(2000);
     // Let's try not waiting for this to complete
+    log("click");
     page.click("button.sign-in-btn");
+    log("post-click");
     await snooze(10000);
 
     log("evaluation sign in continue button");
