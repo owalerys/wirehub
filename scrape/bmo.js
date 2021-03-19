@@ -253,7 +253,7 @@ const errorLog = (...val) => {
     await page.setViewport({ width: 1280, height: 800 });
 
     log("Navigating to BMO...");
-    await page.goto("https://www21.bmo.com", { waitUntil: "networkidle0" });
+    await page.goto("https://www21.bmo.com", { waitUntil: "networkidle2", timeout: 30000 });
     log("Waiting for selector");
     await page.waitForSelector("form#loginFormID input#customerId", {
         timeout: 30000
