@@ -17,11 +17,9 @@ services:
         window: 120s
       rollback_config:
         parallelism: 0
-        order: start-first
       update_config:
         parallelism: 0
         failure_action: rollback
-        order: start-first
       mode: replicated
       replicas: 1
 
