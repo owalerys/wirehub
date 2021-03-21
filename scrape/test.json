@@ -1,0 +1,46 @@
+{
+    "transactionSummary": [
+        {
+            "valueDate": "2021-03-08",
+            "orderingCustomerName": "SILVIA LEE",
+            "amount": "1,500.00",
+            "currency": "USD",
+            "beneficiaryAccountNumber": "02834776970",
+            "beneficiaryName": "9348 5464 QUEBEC INC"
+        },
+        {
+            "valueDate": "2021-03-08",
+            "orderingCustomerName": "CARTER B MOBLEY",
+            "amount": "2,200.00",
+            "currency": "USD",
+            "beneficiaryAccountNumber": "02834776970",
+            "beneficiaryName": "9348 5464"
+        }
+    ],
+    "transactionDetail": [
+        {
+            "wireType": "Commercial",
+            "status": "Confirmed",
+            "postedAt": "2021-03-08 16:27:14 EST",
+            "detailsOfCharges": "BEN - Additional routing charges will be paid by the beneficiary",
+            "referenceNumber": "BCA210308743861",
+            "orderingCustomerAddress": "6300 SAGEMEDOW DR SUITE 256 PARK CITY UT 84098 US",
+            "orderingBankId": "WFBIUS6SXXX",
+            "orderingBankIdType": "SWIFT",
+            "orderingBankName": "Wells Fargo Bk NA",
+            "orderingBankAddress": "420 Montgomery St 7th Fl San Francisco CA 94104 US"
+        },
+        {
+            "wireType": "Commercial",
+            "status": "Confirmed",
+            "postedAt": "2021-03-08 15:29:26 EST",
+            "detailsOfCharges": "BEN - Additional routing charges will be paid by the beneficiary",
+            "referenceNumber": "BCA210308740718",
+            "orderingCustomerAddress": "326 VILLAGE GRN POOLER GA 313229680 US",
+            "orderingBankId": "WFBIUS6SXXX",
+            "orderingBankIdType": "SWIFT",
+            "orderingBankName": "Wells Fargo Bk NA",
+            "orderingBankAddress": "420 Montgomery St 7th Fl San Francisco CA 94104 US"
+        }
+    ]
+}
