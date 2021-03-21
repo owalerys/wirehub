@@ -61,13 +61,18 @@ export default {
         }),
         ...mapActions("user", {
             fetchUser: "fetch"
-        })
+        }),
+        async initLoad() {
+            this.initializeCSRF();
+            await Promise.all([
+                this.fetchAccounts(),
+                this.fetchUser(window.user ? window.user : null)
+            ])
+            this.fetchTeams();
+        }
     },
     created() {
-        this.initializeCSRF();
-        this.fetchTeams();
-        this.fetchAccounts();
-        this.fetchUser(window.user ? window.user : null);
+        this.initLoad()
     }
 };
 </script>

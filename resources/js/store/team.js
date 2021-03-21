@@ -9,6 +9,8 @@ export default {
     },
     actions: {
         async fetch(context) {
+            if (!context.rootGetters['user/isAdmin']) return;
+
             const response = await api.get("/teams");
 
             context.commit("SET_TEAMS", { teams: response.data });
