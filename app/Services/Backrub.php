@@ -90,7 +90,7 @@ class Backrub
 
         $summaryCount = count($decoded['transactionSummary']);
         $detailCount = count($decoded['transactionDetail']);
-        if ($summaryCount === 0 || $summaryCount !== $detailCount) {
+        if ($summaryCount !== $detailCount) {
             throw new \Exception('[' . $summaryCount . ', ' . $detailCount . '] results came back from scraper run. ' . $output);
         }
 
