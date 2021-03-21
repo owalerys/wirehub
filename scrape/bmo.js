@@ -160,10 +160,10 @@ const errorLog = (...val) => {
     async function scrapeReport(page, label) {
         log("selecting date range[" + label + "]");
         // click on date range selector combobox
-        page.click(
+        await page.click(
             "div.search-results div[aria-label='Incoming Wire Payments Report'] div.dateRange input[role='combobox']"
         );
-        await snooze(1500);
+        await snooze(500);
 
         // click on last 3 days
         await page.evaluate(label => {
@@ -173,7 +173,7 @@ const errorLog = (...val) => {
                 "']";
             document.querySelector(selector).click();
         }, label);
-        await snooze(1500);
+        await snooze(500);
 
         log("clicking on generate");
 
@@ -183,10 +183,10 @@ const errorLog = (...val) => {
 
         let pages = await browser.pages();
 
-        page.click(
+        await page.click(
             "button.bmo-btn-large[aria-label='Generate Incoming Wire Payments Report']"
         );
-        await snooze(3000);
+        await snooze(1000);
 
         pages = await browser.pages();
 
@@ -218,7 +218,7 @@ const errorLog = (...val) => {
 
         if (totalPages > 1) {
             for (let i = 0; i < totalPages; i++) {
-                reportPage.click("button[name='nextPage']");
+                await reportPage.click("button[name='nextPage']");
                 await snooze(2000);
             }
         }
@@ -229,7 +229,7 @@ const errorLog = (...val) => {
         // close the tab
         await reportPage.close();
 
-        return result;
+        return result; 
     }
 
     log("launching browser");
@@ -271,12 +271,12 @@ const errorLog = (...val) => {
 
     log("clicking sign-in");
 
-    await snooze(2000);
+    await snooze(1000);
     // Let's try not waiting for this to complete
     log("click");
-    page.click("button.sign-in-btn");
+    await page.click("button.sign-in-btn");
     log("post-click");
-    await snooze(10000);
+    await snooze(5000);
 
     log("evaluation sign in continue button");
     let continueBtn = await page.evaluate(() => {
@@ -296,7 +296,7 @@ const errorLog = (...val) => {
 
     if (continueBtn.select && continueBtn.btn) {
         log("continue button is there");
-        page.click("button.sign-in-btn");
+        await page.click("button.sign-in-btn");
     } else if (!continueBtn.select && continueBtn.btn) {
         errorLog("Sign-In Failure:", errorMessage || "");
         process.exit(1);
@@ -306,8 +306,7 @@ const errorLog = (...val) => {
     log("waiting for account balances table");
     await page.waitForSelector("table.account-balances");
 
-    log("pausing for 5 seconds");
-    await snooze(5000);
+    await snooze(2000);
 
     log("checking for pop up");
     let popUp = await page.evaluate(() => {
@@ -316,14 +315,14 @@ const errorLog = (...val) => {
 
     if (popUp.btn) {
         log("popup is there");
-        page.click("button[aria-label='close']");
-        await snooze(2000);
+        await page.click("button[aria-label='close']");
+        await snooze(500);
     } else log("no popup found");
 
     log("clicking on wire reports");
 
     // click on "Payments & Receivables"
-    page.click("li#paymentsMenu > a");
+    await page.click("li#paymentsMenu > a");
 
     // wait for rendering
     await page.waitForSelector(
@@ -331,7 +330,7 @@ const errorLog = (...val) => {
     );
 
     // click on "Wire Payment / Reports"
-    page.click(
+    await page.click(
         "div#payment div.popover-main-cont div.menu-item-section div.col-md-3:nth-of-type(1) ul > li:nth-of-type(1)"
     );
 
@@ -353,10 +352,10 @@ const errorLog = (...val) => {
         )
     };
 
-    await snooze(100);
+    await snooze(500);
 
-    page.click("li.signout-option > a");
-    await snooze(6000);
+    await page.click("li.signout-option > a");
+    await snooze(1000);
     await page.close();
     await browser.close();
 
