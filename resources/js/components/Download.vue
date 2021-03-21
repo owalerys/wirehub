@@ -26,8 +26,7 @@ export default {
                 const csv = await json2csvAsync(data)
 
                 const hiddenEl = document.getElementById('hiddenDownloadEl')
-                const blob = new Blob(["\ufeff", csv])
-                const file = new File(blob, 'Export.csv', { type: 'text/csv' })
+                const file = new File(["\ufeff", csv], 'Export.csv', { type: 'text/csv' })
                 const url = URL.createObjectURL(file)
                 hiddenEl.href = url
                 hiddenEl.click()
