@@ -196,7 +196,7 @@ const errorLog = (...val) => {
             await snooze(1000);
 
         await reportPage.setDefaultNavigationTimeout(120000);
-        reportPage.setDefaultTimeout(120000);
+        reportPage.setDefaultTimeout(60000 * 3);
 
         await reportPage.waitForSelector("div.report-header-title.row");
         await reportPage.waitForSelector("a[onclick='wireShowAll();']");
@@ -249,7 +249,7 @@ const errorLog = (...val) => {
     let reportPage = null;
 
     await page.setDefaultNavigationTimeout(120000);
-    page.setDefaultTimeout(120000);
+    page.setDefaultTimeout(60000 * 3);
     await page.setViewport({ width: 1280, height: 800 });
 
     log("Navigating to BMO...");
