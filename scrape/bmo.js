@@ -253,7 +253,10 @@ const errorLog = (...val) => {
     await page.setViewport({ width: 1280, height: 800 });
 
     log("Navigating to BMO...");
-    await page.goto("https://www21.bmo.com", { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto("https://www21.bmo.com", {
+        waitUntil: "networkidle2",
+        timeout: 30000
+    });
     log("Waiting for selector");
     await page.waitForSelector("form#loginFormID input#customerId", {
         timeout: 30000
@@ -338,7 +341,7 @@ const errorLog = (...val) => {
         "div.search-results div[aria-label='Incoming Wire Payments Report'] div.dateRange input[role='combobox']"
     );
 
-    let resultLastDays = await scrapeReport(page, "Last 14 days");
+    let resultLastDays = await scrapeReport(page, "Last 3 days");
     let resultToday = await scrapeReport(page, "Current day");
 
     let results = {
