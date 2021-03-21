@@ -55,7 +55,7 @@ class Backrub
             $transactionDetail = $output['transactionDetail'][$i];
 
             $transactionRecord = Transaction::updateOrCreate([
-                'sender_reference_number' => $transactionDetail['sendersReference'],
+                'sender_reference_number' => isset($transactionDetail['sendersReference']) ? $transactionDetail['sendersReference'] : '',
                 'receiver_reference_number' => $transactionDetail['referenceNumber'],
                 'account_id' => $account->id
             ], [
