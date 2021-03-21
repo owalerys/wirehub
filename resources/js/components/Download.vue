@@ -27,9 +27,9 @@ export default {
 
                 const hiddenEl = document.getElementById('hiddenDownloadEl')
                 const blob = new Blob(["\ufeff", csv])
-                const url = URL.createObjectURL(blob)
+                const file = new File(blog, 'Export.csv', { type: 'text/csv' })
+                const url = URL.createObjectURL(file)
                 hiddenEl.href = url
-                hiddenEl.download = this.fileName ? this.fileName : 'Export.csv'
                 hiddenEl.click()
             } catch (e) {
                 console.error(e)
