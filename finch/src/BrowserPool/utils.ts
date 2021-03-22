@@ -3,12 +3,7 @@ import Debug from '../utils/debug'
 import {headless} from '../config'
 import * as config from '../config'
 
-/* const browserFetcher = puppeteer.
-const revision = packageJson.puppeteer.chromium_revision
-const {executablePath} = browserFetcher.revisionInfo(revision) */
-
 const debug = Debug('browser-pool:utils')
-/* debug('got executablePath: %s', executablePath) */
 
 export async function launchBrowser (retries: number = 1): Promise<puppeteer.Browser> {
   const launchArgs = {
