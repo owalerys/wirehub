@@ -28,7 +28,7 @@ services:
         reservations:
           memory: 4G
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/healthcheck"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health-check"]
       interval: 1m30s
       timeout: 10s
       retries: 3
