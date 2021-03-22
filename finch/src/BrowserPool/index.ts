@@ -5,7 +5,8 @@ import {launchBrowser} from './utils'
 export interface IBrowserPoolOptions {
   maxPoolSize: number,
   minPoolSize: number,
-  timeout: number
+  acquisitionTimeout: number,
+  connectionTimeout: number
 }
 
 const borrowedResources: Map<Browser, Date> = new Map()
@@ -20,7 +21,8 @@ export default class BrowserPool {
   }
 
   private pool: Pool<Browser>
-  private timeout?: number
+  private connectionTimeout?: number
+  private acquisitionTimeout?: number
 
   constructor (options: IBrowserPoolOptions) {
     const maxPoolSize = options.maxPoolSize
@@ -31,13 +33,14 @@ export default class BrowserPool {
     }
     const min = Math.max(minPoolSize, 1)
 
-    setInterval(this.timeoutCheck.bind(this), options.timeout)
-    this.timeout = options.timeout
+    this.connectionTimeout = options.connectionTimeout
+    this.acquisitionTimeout = options.acquisitionTimeout
+    setInterval(this.timeoutCheck.bind(this), this.acquisitionTimeout)
 
     this.pool = createPool<Browser>(BrowserPool.factory, {
       max,
       min,
-      acquireTimeoutMillis: this.timeout
+      acquireTimeoutMillis: this.acquisitionTimeout
     })
   }
 
@@ -58,14 +61,13 @@ export default class BrowserPool {
   }
 
   async timeoutCheck (): Promise<void> {
-    if (!this.timeout) {
+    if (!this.connectionTimeout) {
       return
     }
 
     const now = Date.now()
-    const timeout = this.timeout * 2
     for (const [browser, createdAt] of borrowedResources.entries()) {
-      if (now - createdAt.valueOf() > timeout) {
+      if (now - createdAt.valueOf() > this.connectionTimeout) {
         console.error('Possible browser leak detected')
         try {
           await this.pool.destroy(browser)
